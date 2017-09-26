@@ -18,36 +18,48 @@ export default new Router({
                     component: resolve => require(['../components/page/Readme.vue'], resolve)
                 },
                 {
-                    path: '/basetable',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve)
+                    path: '/userCtrl',
+                    component: resolve => require(['../components/page/userCtrl.vue'], resolve)     
                 },
                 {
-                    path: '/vuetable',
-                    component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
+                    path: '/newAdd',
+                    component: resolve => require(['../components/page/newAdd.vue'], resolve)     
                 },
                 {
-                    path: '/baseform',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve)
+                    path: '/funcModule',
+                    component: resolve => require(['../components/page/funcModule.vue'], resolve)     
                 },
                 {
-                    path: '/vueeditor',
-                    component: resolve => require(['../components/page/VueEditor.vue'], resolve)    // Vue-Quill-Editor组件
+                    path: '/selectUser',
+                    component: resolve => require(['../components/page/selectUser.vue'], resolve)     
                 },
                 {
-                    path: '/markdown',
-                    component: resolve => require(['../components/page/Markdown.vue'], resolve)     // Vue-Quill-Editor组件
+                    path: '/contorl',
+                    component: resolve => require(['../components/page/contorl.vue'], resolve)
                 },
                 {
-                    path: '/upload',
-                    component: resolve => require(['../components/page/Upload.vue'], resolve)       // Vue-Core-Image-Upload组件
+                    path: '/roleCtrl',
+                    component: resolve => require(['../components/page/roleCtrl.vue'], resolve)     
                 },
                 {
-                    path: '/basecharts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-schart组件
+                    path: '/kaoqin',
+                    component: resolve => require(['../components/page/kaoqin.vue'], resolve)
                 },
                 {
-                    path: '/drag',
-                    component: resolve => require(['../components/page/DragList.vue'], resolve)    // 拖拽列表组件
+                    path: '/processConfig',
+                    component: resolve => require(['../components/page/processConfig.vue'], resolve)
+                },
+                {
+                    path: '/noticeCtrl',
+                    component: resolve => require(['../components/page/noticeCtrl.vue'], resolve)
+                },
+                {
+                    path: '/projectCtrl',
+                    component: resolve => require(['../components/page/projectCtrl.vue'], resolve)
+                },
+                {
+                    path: '/gather',
+                    component: resolve => require(['../components/page/gather.vue'], resolve)
                 }
             ]
         },

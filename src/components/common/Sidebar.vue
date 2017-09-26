@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index">
@@ -10,9 +10,9 @@
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index">
-                        <i :class="item.icon"></i>{{ item.title }}
-                    </el-menu-item>
+                                    <el-menu-item :index="item.index">
+                                        <i :class="item.icon"></i>{{ item.title }}
+                                    </el-menu-item>
                 </template>
             </template>
         </el-menu>
@@ -27,55 +27,64 @@
                     {
                         icon: 'el-icon-setting',
                         index: 'readme',
-                        title: '自述'
+                        title: '我的管理系统'
                     },
                     {
                         icon: 'el-icon-menu',
-                        index: '2',
-                        title: '表格',
-                        subs: [
-                            {
-                                index: 'basetable',
-                                title: '基础表格'
-                            },
-                            {
-                                index: 'vuetable',
-                                title: 'Vue表格组件'
-                            }
-                        ]
+                        index: 'userCtrl',
+                        title: '用户管理'
                     },
                     {
-                        icon: 'el-icon-date',
+                        icon: 'el-icon-setting',
                         index: '3',
-                        title: '表单',
+                        title: '权限管理',
                         subs: [
+                        	{
+                                index: 'roleCtrl',
+                                title: '角色管理'
+                           },
                             {
-                                index: 'baseform',
-                                title: '基本表单'
+                                index: 'funcModule',
+                                title: '功能模块'
                             },
                             {
-                                index: 'vueeditor',
-                                title: '编辑器'
-                            },
-                            {
-                                index: 'markdown',
-                                title: 'markdown'
-                            },
-                            {
-                                index: 'upload',
-                                title: '文件上传'
+                                index: 'selectUser',
+                                title: '选择用户'
                             }
                         ]
                     },
                     {
-                        icon: 'el-icon-star-on',
-                        index: 'basecharts',
-                        title: '图表'
+                        icon: 'el-icon-setting',
+                        index: '4',
+                        title: '应用管理',
+                        subs: [
+                            {
+                              index: 'contorl',
+                              title: '控件管理'
+                            },
+                            {
+                              index: 'kaoqin',
+                              title: '考勤配置'
+                            },
+                            {
+                              index: 'noticeCtrl',
+                              title: '公告管理'
+                            },
+                            {
+                              index: 'projectCtrl',
+                              title: '项目管理'
+                            }
+                        ]
                     },
                     {
-                        icon: 'el-icon-upload2',
-                        index: 'drag',
-                        title: '拖拽'
+                        icon: 'el-icon-setting',
+                        index: 'processConfig',
+                        title: '审批流程'
+                    },
+                    {
+                        icon: 'el-icon-setting',
+                        index: 'gather',
+                        title: '统计汇总'
                     }
                 ]
             }
@@ -96,7 +105,7 @@
         left: 0;
         top: 70px;
         bottom:0;
-        background: #2E363F;
+        background: #FCFCFC;
     }
     .sidebar > ul {
         height:100%;

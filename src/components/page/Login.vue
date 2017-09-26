@@ -12,7 +12,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                <p style="font-size:12px;line-height:30px;color:rgba(255,255,255,0.6);">Tips : 用户名和密码必填。</p>
             </el-form>
         </div>
     </div>
@@ -75,7 +75,7 @@
         top:50%;
         width:300px;
         height:160px;
-        margin:-150px 0 0 -190px;
+        margin: -160px 0 0 -150px;
         padding:40px;
         border-radius: 5px;
         background: #fff;
