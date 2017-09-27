@@ -147,7 +147,7 @@
     rest(row){
     	console.log(row)
     	axios.post('http://52.80.81.221:12345/admin/user/resetPwd/',{uid:row.userId}).then( res =>{
-    		this.$alert('您的默认密码为：888888', '密码重置成功！', {confirmButtonText: '确定'});
+    		this.$alert('您的默认密码为：888888', '密码重置成功！', {showClose:false,confirmButtonText: '确定'});
     	})
     },
       toggleSelection(rows){

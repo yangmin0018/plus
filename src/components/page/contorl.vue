@@ -221,7 +221,7 @@
 
 			axios.get('http://52.80.81.221:12345/admin/work/app').then(res => {
 				this.appCont = res.data.data;
-				
+				console.log(res)
 			})
 		},
 		methods: {
@@ -267,7 +267,8 @@
 				        this.$confirm('您确定保存修改的信息吗?', '提示', {
 				          confirmButtonText: '确定',
 				          cancelButtonText: '取消',
-				          type: 'warning'
+				          type: 'warning',
+				          showClose:false,
 				        }).then(() => {
 				        	axios({ // 发送post表单提交请求
 								method: 'POST',
@@ -294,7 +295,8 @@
 									        this.$confirm('内容类型为动态UI，是否需要修改应用UI界面？', '提示', {
 									          confirmButtonText: '需要',
 									          cancelButtonText: '不需要',
-									          type: 'warning'
+									          type: 'warning',
+									          showClose:false,
 									        }).then(() => {
 									          this.$message({
 									            type: 'success',

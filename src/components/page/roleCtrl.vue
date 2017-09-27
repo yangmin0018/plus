@@ -58,18 +58,14 @@
                     :total="total">
             </el-pagination>
         </div>
-		<el-dialog title="新增角色" :visible.sync="dialogFormVisible">
+		<el-dialog title="新增角色" :close-on-click-modal=false :visible.sync="dialogFormVisible">
 		  <el-form :model="form">
-		    <el-form-item label="角色ID" :label-width="formLabelWidth">
-		      <el-input v-model="form.id" auto-complete="off"></el-input>
-		    </el-form-item>
 		    <el-form-item label="角色名称" :label-width="formLabelWidth">
 		      <el-input v-model="form.role" auto-complete="off"></el-input>
 		    </el-form-item>
 		    <el-form-item label="角色描述" :label-width="formLabelWidth">
 		      <el-input v-model="form.description" auto-complete="off"></el-input>
 		    </el-form-item>
-		
 		    <el-form-item label="是否可用" :label-width="formLabelWidth">
 		        <el-radio class="radio" v-model="form.available" label=true>是</el-radio>
   				<el-radio class="radio" v-model="form.available" label=false>否</el-radio>
@@ -77,7 +73,7 @@
 		    </el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
-		    <el-button @click="dialogFormVisible = false">取 消</el-button>
+		    <el-button @click="cancel">取 消</el-button>
 		    <el-button type="primary" @click="submit">确 定</el-button>
 		  </div>
 		</el-dialog>
@@ -102,12 +98,9 @@ export default {
         currentPage:1,   //分页的 当前页
         dialogFormVisible: false,
         form: {
-          id: '',
           role: '',
           description: '',
-          resourceIds: '',
-          available: '',
-          resourceIdLst: []
+          available: ''
         },
         formLabelWidth: '120px'
       }
@@ -146,7 +139,9 @@ export default {
     		this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
 	          confirmButtonText: '确定',
 	          cancelButtonText: '取消',
-	          type: 'warning'
+	          type: 'warning',
+	          showClose:false,
+	          closeOnClickModal:false
 	       }).then(() => {
 	          axios.delete('http://52.80.81.221:12345/admin/pms/role/'+this.selectedRow[0].id).then(
 	          	res=>console.log(res)
@@ -173,17 +168,38 @@ export default {
     	submit(){
     		this.form.available = this.form.available == 'true'?true:false;
     		axios({
-     			method: 'GET',
+     			method: 'POST',
      			url:'http://52.80.81.221:12345/admin/pms/role/add',
-     			
+     			transformRequest: [function(data) {
+					let ret = ''
+					for(let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+					}
+						return ret
+					}],
+				headers:{
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
     			data:this.form
     		}).then(res =>{
     			this.tableData.push(res.data.data)
     			console.log(res)
     		})
 			console.log(this.form)
-			this.form = {};
+			this.form = {
+				          role: '',
+				          description: '',
+				          available: ''
+				        };
     		this.dialogFormVisible = false;
+    	},
+    	cancel(){
+    		this.dialogFormVisible = false;
+    		this.form = {
+				          role: '',
+				          description: '',
+				          available: ''
+				        };
     	}
     }
 }

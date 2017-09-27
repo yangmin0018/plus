@@ -56,7 +56,7 @@
 						<el-button type="primary" @click="savePerson">确定</el-button>
 						<el-button @click="cancel">取消</el-button>
 					</div>
-					<el-dialog @open="open" :showClose="false"  :visible.sync="dialogTableVisible">
+					<el-dialog @open="open" :showClose="false" :close-on-click-modal=false  :visible.sync="dialogTableVisible">
 						
 						<div class="tab_select">
 								<div class="search">
@@ -76,6 +76,7 @@
 						</div>
 						<el-table
 						    ref="multipleTable"
+						    closeOnClickModal
 						    :data="dialogTableData"
 						    @selection-change="choiceRow"
 						    tooltip-effect="dark"
@@ -137,7 +138,7 @@ export default {
       return {
       	tableData:'',        //审批应用信息
       	dialogTableData:[],  //指定成员弹出框信息
-      	selectedRow:'',
+      	selectedRow:'',     //被选中的成员
       	total:0,
       	value:'',        //appId
       	currentPage:1,  //分页的 当前页
@@ -158,6 +159,9 @@ export default {
     watch:{
     	radio:function(){
     		if(this.radio==2)this.dialogTableVisible=true;
+    	},
+    	selectedRow:function(){
+    		if(this.selectedRow.length == 0)this.selectedRow='';
     	}
     },
     mounted(){
@@ -294,6 +298,7 @@ export default {
 			        message: '第一级审批设置成功！',
 			        type: 'success'
 			    });
+			    
         		this.dialogTableVisible = false;
         		this.numCtrl = 2;
         	}else{

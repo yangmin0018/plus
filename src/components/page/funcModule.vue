@@ -16,7 +16,7 @@
 		  </el-select>
 		  <el-button @click="submit">保存</el-button>
 		  <div class="remark mt">
-		  	  	<el-transfer v-model="selectedModul" :data="roles"  :titles="['待选模块', '已选模块']"></el-transfer>
+		  	  	<el-transfer v-model="selectedModul" :data="moduls"  :titles="['待选模块', '已选模块']"></el-transfer>
 		  </div>
 		  
 	</div>
@@ -28,14 +28,18 @@ import axios from 'axios';
 export default {
     data() {
       return {
-        roles: [],
+        roles: [],   //有所角色
         value: '',   //选择角色
         tableData:'',
         total:'',
-        selectedModul:[]   //选中的模块
-      }
+        moduls:[],      //所有功能模块
+        selectedModul:[],   //选中的模块
+        roleId:'',        //选中角色的ID
+        modulId:''       //选择功能模块的ID
+       }
     },
     mounted(){
+    	//角色选择
 		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
@@ -45,14 +49,45 @@ export default {
 				this.roles.push( obj );
 			}
 		});
+		//功能选择
+		axios.get('http://52.80.81.221:12345/admin/work/app').then( res =>{
+			var getRole = res.data.data;
+			for(var i=0;i<getRole.length;i++){
+				var obj = {};
+				obj.key = getRole[i].appId;
+				obj.label = getRole[i].appName;
+				this.moduls.push( obj );
+			}
+		});
 	},
     methods:{
     	//角色选择
 	    roleChangeSearch(a){
-	    	console.log(a)
+	    	this.roleId = a;
+	    	console.log(this.roleId)
 	    },
 	    submit(){
-	    	console.log(this.selectedModul)
+	    	this.modulId = this.selectedModul.join(',');
+	    	console.log( this.modulId);
+	    	
+	    	var obj = {resId:this.modulId};
+	    	axios({
+    			method: 'POST',
+    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/AddResource',
+    			transformRequest: [function(data) {
+					let ret = ''
+					for(let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+					}
+						return ret
+					}],
+				headers:{
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+    			data:obj
+    		}).then( res =>{
+				console.log(res)
+			})	
 	    }
     }
   }

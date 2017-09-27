@@ -21,7 +21,7 @@
 		    </el-select>
 		  </el-form-item>
 		  <el-form-item label="手机号码">
-		    <el-input v-model="formLabelAlign.phone"></el-input>
+		    <el-input v-model.number="formLabelAlign.phone"></el-input>
 		  </el-form-item>
 		  <!--<el-form-item label="密码">
 		    <el-input v-model="formLabelAlign.password"></el-input>
@@ -42,13 +42,13 @@
 		  <el-form-item label="邮箱">
 		    <el-input v-model="formLabelAlign.email"></el-input>
 		  </el-form-item>
-		  <el-form-item label="备注" class="remark">
+		  <!--<el-form-item label="备注" class="remark">
 			   <el-input
 				  type="textarea"
 				  :rows="3"
 				  placeholder="请输入内容">
 				</el-input>
-		  </el-form-item>
+		  </el-form-item>-->
 		   <el-form-item label="添加角色" class="remark">
 		   	<el-transfer v-model="selectedRoles" :data="roles"  :titles="['待选角色', '已选角色']"></el-transfer>
 		   </el-form-item>
