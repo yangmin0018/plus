@@ -65,7 +65,7 @@
 									</div>
 									<el-button @click="stringQuerySearch">查询</el-button>
 								</div>
-								<el-select v-model="value1" @change="valChangeSearch" placeholder="请选择部门">
+								<el-select v-model="value1" @change="valChangeSearch" class="el-selectp" placeholder="请选择部门">
 								    <el-option
 								      v-for="item in org"
 								      :key="item.id"
@@ -220,6 +220,7 @@ export default {
 	        })
         },
         reviewsPublicPost(){
+        	
         		axios({ // 发送post表单提交请求
 					method: 'POST',
 					url: 'http://52.80.81.221:12345/admin/review/'+ this.reviewObj.reviewId,
@@ -240,7 +241,6 @@ export default {
     				})
        },
         savePerson(){
-        	
         	if(!this.radio2){
         		return false;
         	}else if(!this.value){
@@ -289,7 +289,11 @@ export default {
         		return false;
         	}else if(this.ctrl){
         		var p = document.getElementsByClassName('grade')[0].getElementsByTagName('p')[0];
-        		p.innerHTML = this.selectedRow[0].name;
+        		var txt = '';
+        		for(var i=0;i<this.selectedRow.length;i++){
+        			txt += this.selectedRow[i].name + ' ';
+        		}
+        		p.innerHTML = txt;
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 1;
         		this.reviewObj.isVirtual = false;
@@ -303,8 +307,11 @@ export default {
         		this.numCtrl = 2;
         	}else{
         		var p = document.getElementsByClassName('grade')[1].getElementsByTagName('p')[0];
-        		p.innerHTML = this.selectedRow[0].name;
-        		
+        		var txt = '';
+        		for(var i=0;i<this.selectedRow.length;i++){
+        			txt += this.selectedRow[i].name + ' ';
+        		}
+        		p.innerHTML = txt;
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 2;
         		this.reviewObj.isVirtual = false;
@@ -392,14 +399,14 @@ export default {
 		margin-left: 20px;
 	}
 	.grade{
-		width: 140px;
+		min-width: 140px;
 		height: 40px;
-		background: url(../../assets/bg.png)no-repeat;
+		background: url(../../assets/bg.png)repeat-x;
 		float: left;
 		cursor: pointer;
 	}
 	.grade p{
-		width: 85px;
+		width: 100%;
 		overflow: hidden;
 		font-size: 12px;
 		color: #333333;
@@ -477,4 +484,5 @@ export default {
   	.active{
   		border: 1px dashed #0073c3;
   	}
+  	.el-selectp{width: 35%;}
 </style>

@@ -37,8 +37,8 @@
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
-	    	align='center'
-	      prop="resourceIdLst.length"
+	      align='center'
+	      prop="memberCount"
 	      label="用户数"
 	      min-width="120">
 	    </el-table-column>
@@ -167,6 +167,7 @@ export default {
     	},
     	submit(){
     		this.form.available = this.form.available == 'true'?true:false;
+    		
     		axios({
      			method: 'POST',
      			url:'http://52.80.81.221:12345/admin/pms/role/add',

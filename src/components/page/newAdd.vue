@@ -10,7 +10,7 @@
 			<el-button @click="submite">确定</el-button>
 			<router-link to="/userCtrl"><el-button>取消</el-button></router-link>
 		</div>
-		<el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+		<el-form :label-position="labelPosition" class="addperson" label-width="80px" :model="formLabelAlign">
 		  <el-form-item label="姓名">
 		    <el-input v-model="formLabelAlign.name"></el-input>
 		  </el-form-item>
@@ -110,6 +110,7 @@ export default {
     			data:this.formLabelAlign
     		}).then( res =>{
 				console.log(res)
+				this.$message('添加成功！')
 		})	
     		
     	}
@@ -127,11 +128,11 @@ export default {
 		width: 80%;
 		overflow: hidden;
 	}
-	form>div{
+	.addperson>div{
 		width: 50%;
 		float: left;
 	}
-	.remark{
+	.addperson .remark{
 		width: 100%;
 	}
 </style>
