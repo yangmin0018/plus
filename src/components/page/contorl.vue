@@ -92,6 +92,7 @@
 					</el-form-item>
 				  </el-form>
 				  <div slot="footer" class="dialog-footer">
+				  	<el-button type="primary" @click="deleteApp" > 删除应用</el-button>
 				  	<el-button type="primary" @click="modify" > 修 改 </el-button>
 				    <el-button type="primary" v-show="!singleShow" @click="dialogSubmit()">确 定</el-button>
 				  </div>
@@ -357,7 +358,23 @@
 
 				})
 			},
-
+			deleteApp(){
+				console.log(this.form.appId)
+				axios.delete('http://52.80.81.221:12345/admin/work/app/'+this.form.appId).then(
+	          		res=>{
+	          			for(var i=0;i<this.appCont.length;i++){
+	          				if(this.appCont[i].appId == this.form.appId){
+	          					var index = this.appCont.indexOf(this.appCont[i]);
+	          					this.appCont.splice(index,1)
+	          					this.dialogFormVisible = false;
+	          					console.log(res);
+	          					return false;
+	          				}
+	          			}
+	          		}
+	          		
+	          	);
+			},
 			addClass(index) {
 				this.idx = index;
 			},

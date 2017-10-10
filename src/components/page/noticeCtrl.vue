@@ -33,40 +33,49 @@
 		</div>
 		<el-table
 	    ref="multipleTable"
-	    :data="tableData3"
+	    :data="tableData"
 	    tooltip-effect="dark"
 	    style="width: 100%"
 	    @selection-change="handleSelectionChange">
 	    <el-table-column
+	    	align='center'
 	      type="selection"
 	      width="55">
 	    </el-table-column>
 	    <el-table-column
+	    	align='center'
+	      prop="appdataId"
 	      label="序号"
 	      min-width="120">
-	      <template scope="scope">{{ scope.row.date }}</template>
 	    </el-table-column>
 	    <el-table-column
+	    	align='center'
 	      prop="name"
 	      label="姓名"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
+	    	align='center'
 	      prop="createTime"
 	      label="创建时间"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
-	      prop="noticeTitle"
+	    	align='center'
+	      prop="data.title"
 	      label="公告标题"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column 
-	      prop="publishState"
+	    	align='center'
 	      label="发布状态"
 	      min-width="120">
+	      <template scope="scope">
+	      	<span style="color: greenyellow;">已发布</span>
+	      </template>
 	    </el-table-column>
 	    <el-table-column 
+	    	align='center'
 	      prop="handle"
 	      label="操作"
 	      min-width="120">
@@ -76,6 +85,7 @@
 </template>
 
 <script>
+	import axios from 'axios';
 	export default {
     data() {
       return {
@@ -89,60 +99,22 @@
         }],
         value: '',
         value1: '',
-        tableData3: [{
-          tel: '1111111111',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '2222222222',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '3333333333333',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '4444444444',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '5555555555',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '6666666666',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }, {
-          tel: '77777777777',
-          name: '王小虎',
-          createTime: '2017-8-8',
-          noticeTitle:'城投执行力plus',
-          publishState:'已发布',
-          handle:'查看'
-        }],
+        tableData: '',
         multipleSelection: []
       }
     },
-     methods: {
+    mounted(){
+    	axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    		for(var i=0;i<res.data.data.list.length;i++){
+    			var aa = JSON.parse(res.data.data.list[i].data);
+    			res.data.data.list[i].data = aa;
+    		}
+    		this.tableData = res.data.data.list;
+    		
+			console.log(this.tableData)
+		});
+    },
+    methods: {
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {

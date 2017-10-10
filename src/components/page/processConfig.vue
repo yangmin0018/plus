@@ -5,12 +5,7 @@
                 <el-breadcrumb-item><i class="el-icon-date"></i> 审批流程</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <!--<div class="tab_select">
-		 	<div class="btn">-->
-				<!--<el-button>确定</el-button>
-				<el-button>取消</el-button>-->
-			<!--</div>
-		</div>-->
+       
 		<div class="selectProcess">
 				<el-select   v-model="value" @change="appValChangeSearch" placeholder="选择审批应用" class="select">
 				    <el-option
@@ -58,7 +53,7 @@
 					</div>
 					<el-dialog @open="open" :showClose="false" :close-on-click-modal=false  :visible.sync="dialogTableVisible">
 						
-						<div class="tab_select">
+						<div class="tab_select tab_config">
 								<div class="search">
 									<div class="input">
 										<el-input v-model="queryVal" placeholder="姓名/手机"></el-input>
@@ -145,6 +140,9 @@ export default {
         pageSize:10,     //每页显示条数
         queryVal:'',    //query查询字符串
         value1: '',  //选择部门
+        reviewsLen:0,    //被选择的审批应用下的reviews的长度
+        reviewId1:'',    //第一级的reviewId
+        reviewId2:'',    //第二级的reviewId
         org: [],     
         radio:'',
         radio2:'',
@@ -174,9 +172,10 @@ export default {
 			this.org = res.data.data;
 		});
 		axios.get('http://52.80.81.221:12345/admin/review?pageNum=1&pageSize=12').then( res =>{
-			
 			console.log(res)
+			console.log(this.reviewsLen)
 		})
+		
 	},
     methods:{
     	//公共请求：分页数据，总页数，当前页展示
@@ -219,8 +218,34 @@ export default {
 	          
 	        })
         },
-        reviewsPublicPost(){
-        	
+        //审批选择
+    	appValChangeSearch(a){
+    		//为了动态获取审批设置，每次选择都请求新数据
+    		axios.get('http://52.80.81.221:12345/admin/review/apps').then( res =>{
+			
+				this.tableData = res.data.data;
+				console.log(this.tableData)
+				//找到对应appId的数据
+				for(var i=0;i<this.tableData.length;i++){
+	    			if(this.tableData[i].appId == a){
+	    				this.reviewsLen = this.tableData[i]['reviews'].length;console.log(this.reviewsLen)
+	    				this.reviewObj.appId = this.tableData[i].appId;
+	    				//根据reviews长度，决定请求ID值有几个，分别拿到
+	    				if(this.reviewsLen == 1){
+	    					this.reviewId1 = this.tableData[i]['reviews'][0].reviewId;
+	    				}else if(this.reviewsLen==2){
+	    					this.reviewId1 = this.tableData[i]['reviews'][0].reviewId;
+	    					this.reviewId2 = this.tableData[i]['reviews'][1].reviewId;
+	    				}
+				console.log(this.reviewsLen)
+	    				return false;
+	    			}
+	    		}
+			});
+    		
+    	},
+      	//如果被选应用已有审批流程，请求API
+      	reviewsPublicPost(){
         		axios({ // 发送post表单提交请求
 					method: 'POST',
 					url: 'http://52.80.81.221:12345/admin/review/'+ this.reviewObj.reviewId,
@@ -236,10 +261,31 @@ export default {
 					},
 					data: this.reviewObj
 				}).then( res =>{
-    				console.log(this.reviewObj)
+					this.$message.success('审批设置成功！');
     				console.log(res)
     				})
-       },
+       	},
+       	//如果被选应用没有审批流程，请求API
+       	reviewsPublicPost_2(){
+        		axios({ // 发送post表单提交请求
+					method: 'POST',
+					url: 'http://52.80.81.221:12345/admin/review/',
+					transformRequest: [function(data) {
+						let ret = ''
+						for(let it in data) {
+							ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+							return ret
+					}],
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					data: this.reviewObj
+				}).then( res =>{
+					this.$message.success('审批设置成功！');
+    				console.log(res)
+    				})
+       	},
         savePerson(){
         	if(!this.radio2){
         		return false;
@@ -248,18 +294,21 @@ export default {
 		          message: '请选择审批应用',
 		          type: 'warning'
 		        });
-        		return false;
         	}else if(this.ctrl){
         		var p = document.getElementsByClassName('grade')[0].getElementsByTagName('p')[0];
         		p.innerHTML = this.radio2 == 1 ? '第一级主管':'第二级主管';
         		this.reviewObj.stepNo = 1;
         		this.reviewObj.isVirtual = true;
         		this.reviewObj.userId = parseInt(this.radio2);
-        		this.reviewsPublicPost();
-        		this.$message({
-			        message: '第一级审批设置成功！',
-			        type: 'success'
-			    });
+        		console.log(this.reviewsLen)
+        		//进入第一级审批后，如果reviews长度大于0，请求ID值
+        		if(this.reviewsLen > 0){
+        			this.reviewObj.reviewId = this.reviewId1;
+        			this.reviewsPublicPost();
+        		}else if(this.reviewsLen == 0){
+        			this.reviewObj.reviewId = '';
+        			this.reviewsPublicPost_2();
+        		}
         		this.numCtrl = 2;
 			}else{
         		var p = document.getElementsByClassName('grade')[1].getElementsByTagName('p')[0];
@@ -267,11 +316,15 @@ export default {
         		this.reviewObj.stepNo = 2;
         		this.reviewObj.isVirtual = true;
         		this.reviewObj.userId = parseInt(this.radio2);
-        		this.reviewsPublicPost();
-        		this.$message({
-			        message: '第二级审批设置成功！',
-			        type: 'success'
-			    });
+        		console.log(this.reviewsLen)
+        		//进入第二级审批后，如果reviews长度等于2，请求ID值
+        		if(this.reviewsLen == 2){
+        			this.reviewObj.reviewId = this.reviewId2;
+        			this.reviewsPublicPost();
+        		}else if(this.reviewsLen < 2){
+        			this.reviewObj.reviewId = '';
+        			this.reviewsPublicPost_2();
+        		}
         	}
         	this.radio = '';
         },
@@ -297,12 +350,15 @@ export default {
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 1;
         		this.reviewObj.isVirtual = false;
-        		this.reviewsPublicPost();
-        		this.$message({
-			        message: '第一级审批设置成功！',
-			        type: 'success'
-			    });
-			    
+        		console.log(this.reviewsLen)
+        		//进入第一级审批后，如果reviews长度大于0，请求ID值
+        		if(this.reviewsLen > 0){
+        			this.reviewObj.reviewId = this.reviewId1;
+        			this.reviewsPublicPost();
+        		}else if(this.reviewsLen == 0){
+        			this.reviewObj.reviewId = '';
+        			this.reviewsPublicPost_2();
+        		}
         		this.dialogTableVisible = false;
         		this.numCtrl = 2;
         	}else{
@@ -315,11 +371,15 @@ export default {
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 2;
         		this.reviewObj.isVirtual = false;
-        		this.reviewsPublicPost();
-        		this.$message({
-			        message: '第二级审批设置成功！',
-			        type: 'success'
-			    });
+        		console.log(this.reviewsLen)
+        		//进入第二级审批后，如果reviews长度等于2，请求ID值
+        		if(this.reviewsLen == 2){
+        			this.reviewObj.reviewId = this.reviewId2;
+        			this.reviewsPublicPost();
+        		}else if(this.reviewsLen < 2){
+        			this.reviewObj.reviewId = '';
+        			this.reviewsPublicPost_2();
+        		}
         		this.dialogTableVisible = false;
         	};
         	this.radio = '';
@@ -358,23 +418,14 @@ export default {
 				this.total = res.data.data.total;
 				this.currentPage =1;
 			})
-	    },
-    	appValChangeSearch(a){
-    		for(var i=0;i<this.tableData.length;i++){
-    			if(this.tableData[i].appId == a){
-    				this.reviewObj.reviewId = this.tableData[i]['reviews'][0].reviewId;
-    				this.reviewObj.appId = this.tableData[i]['reviews'][0].appId;
-    				return false;
-    			}
-    		}
-    	}
+	    }
     }
 }
 </script>
 
 <style>
 	.fr{float: right;}
-	.search{
+	.tab_config .search{
 		float: right;
 		width: 60%;
 	}

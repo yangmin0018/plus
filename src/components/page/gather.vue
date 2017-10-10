@@ -72,7 +72,7 @@
 	    </el-table-column>
 	    <el-table-column
 	      prop="modifiTime"
-	      label="出勤天数"
+	      label="缺卡次数"
 	      min-width="120">
 	    </el-table-column>
 	  </el-table>
@@ -126,14 +126,14 @@
       }
     },
 	mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-09-30 23:59:59').then( res =>{
-    		
-			console.log(res)
-		});
-//		axios.get('http://52.80.81.221:12345/admin/statics/2?pageNum=1&pageSize=10').then( res =>{
+//  	axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-09-30 23:59:59').then( res =>{
 //  		
 //			console.log(res)
 //		});
+		axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    		
+			console.log(res)
+		});
     },
     methods: {
       toggleSelection(rows) {
