@@ -6,7 +6,7 @@
                 <el-breadcrumb-item>公告管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-		<div class="tab_select">
+		<!--<div class="tab_select">
 		 	<div class="btn">
 				<el-button @click="submite">新增</el-button>
 				<el-button>取消</el-button>
@@ -30,18 +30,14 @@
 		    </el-option>
 		  </el-select>
 		  <el-button>保存</el-button>
-		</div>
+		</div>-->
 		<el-table
 	    ref="multipleTable"
 	    :data="tableData"
 	    tooltip-effect="dark"
 	    style="width: 100%"
 	    @selection-change="handleSelectionChange">
-	    <el-table-column
-	    	align='center'
-	      type="selection"
-	      width="55">
-	    </el-table-column>
+	    
 	    <el-table-column
 	    	align='center'
 	      prop="appdataId"
@@ -82,7 +78,7 @@
 	       <template scope="scope">
 		        <el-button
 		          size="small"
-		          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+		          @click="handleEdit(scope.$index, scope.row)">查看</el-button>
 		        <el-button
 		          size="small"
 		          type="danger"
@@ -90,6 +86,16 @@
 	      </template>
 	    </el-table-column>
 	  </el-table>
+	  <el-dialog
+		  :title="title"
+		  :visible.sync="dialogVisible"
+		  size="tiny">
+		  <span>{{content}}</span>
+		  <span slot="footer" class="dialog-footer">
+			    <!--<el-button @click="dialogVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+		  </span>
+	   </el-dialog>
 	</div>
 </template>
 
@@ -108,8 +114,11 @@
         }],
         value: '',
         value1: '',
-        tableData: '',
-        multipleSelection: []
+        tableData: [],
+        multipleSelection: [],
+        dialogVisible: false,
+        content:'',
+        title:''
       }
     },
     mounted(){
@@ -124,6 +133,16 @@
 		});
     },
     methods: {
+    	handleEdit(index, row){
+    		this.dialogVisible = true;
+    		this.content = row.data.content;
+    		this.title = row.data.title;
+    		 console.log(index, row);
+    	},
+    	handleDelete(index, row){
+    		alert('没有这个功能')
+    		 console.log(index, row);
+    	},
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {

@@ -2,7 +2,7 @@
 	<div class="">
 		<div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i>权限管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-date"></i> 权限管理</el-breadcrumb-item>
                 <el-breadcrumb-item>功能模块</el-breadcrumb-item>
             </el-breadcrumb>
         </div>

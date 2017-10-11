@@ -18,11 +18,11 @@
 			<div class="processPerson">
 				<ul>
 					<li class="grade" :class="{active:ctrl==true}" @click="firstManager">
-						<p >直接主管</p>
+						<p >{{managerOne}}</p>
 					</li>
 					<li class="add" v-show="!manager"></li>
 					<li class="grade" :class="{active:ctrl==false}" v-show="!manager" @click="secondManager">
-						<p>第2级主管</p>
+						<p>{{managerTwo}}</p>
 					</li>
 					<li class="del" @click="delManager" v-show="!manager"></li>
 					<li class="addMore" @click="addManager" v-show="manager"></li>
@@ -151,7 +151,9 @@ export default {
         dialogTableVisible: false,
         ctrl:true,       //审批人设定控制器
         reviewObj:{},      //修改流程审批 提交信息
-        numCtrl:1           //控制流程（第一级设置后才能设置第二级）
+        numCtrl:1,           //控制流程（第一级设置后才能设置第二级）
+        managerOne:'直接主管',
+        managerTwo:'第二级主管'
       }
     },
     watch:{
@@ -237,7 +239,11 @@ export default {
 	    					this.reviewId1 = this.tableData[i]['reviews'][0].reviewId;
 	    					this.reviewId2 = this.tableData[i]['reviews'][1].reviewId;
 	    				}
-				console.log(this.reviewsLen)
+						console.log(this.reviewsLen);
+						//每次选择改变后都要重置页面内容
+						this.manager = true;
+						this.managerOne = '直接主管';
+						this.managerTwo = '第二级主管';
 	    				return false;
 	    			}
 	    		}
@@ -286,6 +292,7 @@ export default {
     				console.log(res)
     				})
        	},
+       	//指定级别审批确定按钮
         savePerson(){
         	if(!this.radio2){
         		return false;
@@ -295,8 +302,8 @@ export default {
 		          type: 'warning'
 		        });
         	}else if(this.ctrl){
-        		var p = document.getElementsByClassName('grade')[0].getElementsByTagName('p')[0];
-        		p.innerHTML = this.radio2 == 1 ? '第一级主管':'第二级主管';
+        		
+        		this.managerOne = this.radio2 == 1 ? '第一级主管':'第二级主管';
         		this.reviewObj.stepNo = 1;
         		this.reviewObj.isVirtual = true;
         		this.reviewObj.userId = parseInt(this.radio2);
@@ -311,8 +318,8 @@ export default {
         		}
         		this.numCtrl = 2;
 			}else{
-        		var p = document.getElementsByClassName('grade')[1].getElementsByTagName('p')[0];
-        		p.innerHTML = this.radio2 == 1 ? '第一级主管':'第二级主管';
+        		
+        		this.managerTwo = this.radio2 == 1 ? '第一级主管':'第二级主管';
         		this.reviewObj.stepNo = 2;
         		this.reviewObj.isVirtual = true;
         		this.reviewObj.userId = parseInt(this.radio2);
@@ -331,6 +338,7 @@ export default {
         cancel(){
 	        	this.inputTxt = '';
         },
+        //指定某人审批确定按钮
         savePerson2(){
         	if(!this.selectedRow){
         		return false;
@@ -339,18 +347,24 @@ export default {
 		          message: '请选择审批应用',
 		          type: 'warning'
 		        });
-        		return false;
+		        
+        	}else if(this.selectedRow.length>1){
+        		this.$message.error('只能指定一位用户!')
         	}else if(this.ctrl){
-        		var p = document.getElementsByClassName('grade')[0].getElementsByTagName('p')[0];
-        		var txt = '';
-        		for(var i=0;i<this.selectedRow.length;i++){
-        			txt += this.selectedRow[i].name + ' ';
-        		}
-        		p.innerHTML = txt;
+        		
+//      		var txt = '';
+//      		var uids = '';
+//      		for(var i=0;i<this.selectedRow.length;i++){
+//      			txt += this.selectedRow[i].name + ' ';
+//      			uids += ','+this.selectedRow[i].userId;
+//      		}
+        		this.managerOne = this.selectedRow[0].name;
+//      		uids = uids.slice(1);
+//				this.reviewObj.userId = uids;
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 1;
         		this.reviewObj.isVirtual = false;
-        		console.log(this.reviewsLen)
+        		
         		//进入第一级审批后，如果reviews长度大于0，请求ID值
         		if(this.reviewsLen > 0){
         			this.reviewObj.reviewId = this.reviewId1;
@@ -361,13 +375,14 @@ export default {
         		}
         		this.dialogTableVisible = false;
         		this.numCtrl = 2;
+        		console.log(this.reviewObj)
         	}else{
-        		var p = document.getElementsByClassName('grade')[1].getElementsByTagName('p')[0];
-        		var txt = '';
-        		for(var i=0;i<this.selectedRow.length;i++){
-        			txt += this.selectedRow[i].name + ' ';
-        		}
-        		p.innerHTML = txt;
+        		
+//      		var txt = '';
+//      		for(var i=0;i<this.selectedRow.length;i++){
+//      			txt += this.selectedRow[i].name + ' ';
+//      		}
+        		this.managerTwo = this.selectedRow[0].name;
         		this.reviewObj.userId = this.selectedRow[0].userId;
         		this.reviewObj.stepNo = 2;
         		this.reviewObj.isVirtual = false;

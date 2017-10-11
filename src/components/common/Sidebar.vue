@@ -62,10 +62,10 @@
                               index: 'contorl',
                               title: '控件管理'
                             },
-                            {
-                              index: 'kaoqin',
-                              title: '考勤配置'
-                            },
+//                          {
+//                            index: 'kaoqin',
+//                            title: '考勤配置'
+//                          },
                             {
                               index: 'noticeCtrl',
                               title: '公告管理'

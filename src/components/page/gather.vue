@@ -7,13 +7,13 @@
         </div>
 		<div class="tab_select">
 			<div class="search">
-				<div class="input">
+				<!--<div class="input">
 					<el-input  v-model="input" placeholder="姓名/手机"></el-input>
-				</div>
-				<el-button>查询</el-button>
+				</div>-->
+				<el-button @click="search">查询</el-button>
 			</div>
 			
-			<el-select  v-model="value" placeholder="请选择" style="width: auto;">
+			<el-select  v-model="value" @change="summaryChangeSearch" placeholder="请选择" style="width: auto;">
 			    <el-option
 			      v-for="item in options"
 			      :key="item.value"
@@ -21,7 +21,7 @@
 			      :value="item.value">
 			    </el-option>
 		  </el-select>
-		  	<el-button>导出</el-button>
+		  	<!--<el-button>导出</el-button>-->
 			    <span class="demonstration">开始时间</span>
 			    <el-date-picker
 			      v-model="value1"
@@ -30,53 +30,67 @@
 			    </el-date-picker>
 			    <span class="demonstration">结束时间</span>
 		  		<el-date-picker
-			      v-model="value1"
+			      v-model="value2"
 			      type="date"
 			      placeholder="选择日期">
 			    </el-date-picker>
 		</div>
 	  <el-table
 	    ref="multipleTable"
-	    :data="tableData3"
+	    :data="tableData"
 	    tooltip-effect="dark"
 	    style="width: 100%"
 	    @selection-change="handleSelectionChange">
 	    <el-table-column
-	      type="selection"
+	      <!--type="selection"-->
 	      width="55">
 	    </el-table-column>
 	    <el-table-column
+	    	align='center'
+	      prop="userId"
 	      label="序号"
 	      min-width="120">
-	      <template scope="scope">{{ scope.row.date }}</template>
 	    </el-table-column>
 	    <el-table-column
-	      prop="tel"
+	    	align='center'
+	      prop="department"
 	      label="部门"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
+	    	align='center'
 	      prop="name"
 	      label="姓名"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
-	      prop="state"
+	    	align='center'
+	      prop="later"
 	      label="迟到次数"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
-	      prop="modifiTime"
+	    	align='center'
+	      prop="quit"
 	      label="早退次数"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
-	      prop="modifiTime"
+	    	align='center'
+	      prop="miss"
 	      label="缺卡次数"
 	      min-width="120">
 	    </el-table-column>
 	  </el-table>
-	  
+	  <div class="pagination">
+	    <el-pagination
+            		small
+                    @current-change ="handleCurrentChange"
+                    layout="prev, pager, next"
+                    :current-page="currentPage"
+                    :total="total">
+        </el-pagination>
+       </div>
   </div>
 </template>
 
@@ -85,66 +99,87 @@
   export default {
     data() {
       return {
-      	 
         value1: '',
-        tableData3: [{
-          tel: '1111111111',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '2222222222',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '3333333333333',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '4444444444',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '5555555555',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '6666666666',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          tel: '77777777777',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        value2:'',
+        tableData: [],
         multipleSelection: [],
         options: [{
-          value: '选项1',
+          value: '1',
           label: '考勤汇总'
         }],
+        pageSize:10,
+        summaryId:'',
+        total:0,
+        currentPage:1,   //分页的 当前页
         value:'',
         input:''
       }
     },
 	mounted(){
-//  	axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-09-30 23:59:59').then( res =>{
-//  		
-//			console.log(res)
-//		});
-		axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    	axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-10-10 23:59:59').then( res =>{
     		
 			console.log(res)
 		});
-    },
+		
+   },
     methods: {
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
+    	summaryChangeSearch(a){
+    		this.summaryId = a;
+    	},
+    	search(){
+    		if(this.summaryId == ''){
+    			this.$message.error('请选择统计类别');
+    		}else if(this.value1 == '' ||this.value2 == ''){
+    			this.$message.error('请选择时间段');
+    		}else{
+	    		var mValue1 = (new Date(this.value1)).getTime();
+				var mValue2 = (new Date(this.value2)).getTime();
+				this.value1 = format1(mValue1);
+				this.value2 = format2(mValue2);
+				//时间格式转换函数
+				function add0(m){return m<10?'0'+m:m };
+				function format1(shijianchuo){
+					//shijianchuo是整数，否则要parseInt转换
+					var time = new Date(shijianchuo);
+					var y = time.getFullYear();
+					var m = time.getMonth()+1;
+					var d = time.getDate();
+					var h = time.getHours();
+					var mm = time.getMinutes();
+					var s = time.getSeconds();
+					return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+				};
+				function format2(shijianchuo){
+					//shijianchuo是整数，否则要parseInt转换
+					var time = new Date(shijianchuo);
+					var y = time.getFullYear();
+					var m = time.getMonth()+1;
+					var d = time.getDate();
+					return y+'-'+add0(m)+'-'+add0(d)+' 23:59:59';
+				};
+	    		switch (this.summaryId){
+	    			case '1':
+	    				axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	    					this.tableData = res.data.data.list;
+	    					this.total = res.data.data.total;
+	    					this.currentPage =1;
+	    					console.log(this.value2)
+							console.log(res)
+						});
+	    				break;
+	    			default:
+	    				break;
+	    		};
+	    	}
+    	},
+    	handleCurrentChange(val){
+	        this.currentPage = val;
+	        axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum='+val+'&pageSize='+this.pageSize+'&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+    					this.tableData = res.data.data.list;
+    					
+						console.log(res)
+					});
+	    },
       handleSelectionChange(val) {
         this.multipleSelection = val;
         console.log(this.multipleSelection)
