@@ -316,7 +316,7 @@ export default {
         			this.reviewObj.reviewId = '';
         			this.reviewsPublicPost_2();
         		}
-        		this.numCtrl = 2;
+//      		this.numCtrl = 2;
 			}else{
         		
         		this.managerTwo = this.radio2 == 1 ? '第一级主管':'第二级主管';
@@ -374,7 +374,7 @@ export default {
         			this.reviewsPublicPost_2();
         		}
         		this.dialogTableVisible = false;
-        		this.numCtrl = 2;
+//      		this.numCtrl = 2;
         		console.log(this.reviewObj)
         	}else{
         		
@@ -405,15 +405,7 @@ export default {
     		}
     	},
     	secondManager(){
-    		if( this.numCtrl == 2 ){
-    			this.ctrl=!this.ctrl
-    		}else{
-    			this.$message({
-		          message: '请先设置第一级审批人，再设置第二级审批人！',
-		          type: 'warning'
-		        });
-    		}
-    		
+    		this.ctrl=!this.ctrl
     	},
     	addManager(){
     		this.manager = !this.manager;
