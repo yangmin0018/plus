@@ -60,10 +60,10 @@
         </div>
 		<el-dialog title="新增角色" :close-on-click-modal=false :visible.sync="dialogFormVisible">
 		  <el-form :model="form">
-		    <el-form-item label="角色名称" :label-width="formLabelWidth">
+		    <el-form-item label="角色描述" :label-width="formLabelWidth">
 		      <el-input v-model="form.role" auto-complete="off"></el-input>
 		    </el-form-item>
-		    <el-form-item label="角色描述" :label-width="formLabelWidth">
+		    <el-form-item label="角色名称" :label-width="formLabelWidth">
 		      <el-input v-model="form.description" auto-complete="off"></el-input>
 		    </el-form-item>
 		    <el-form-item label="是否可用" :label-width="formLabelWidth">
