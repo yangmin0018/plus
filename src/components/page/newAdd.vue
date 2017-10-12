@@ -42,17 +42,20 @@
 		  <el-form-item label="邮箱">
 		    <el-input v-model="formLabelAlign.email"></el-input>
 		  </el-form-item>
-		  <!--<el-form-item label="备注" class="remark">
-			   <el-input
-				  type="textarea"
-				  :rows="3"
-				  placeholder="请输入内容">
-				</el-input>
-		  </el-form-item>-->
+		 
 		   <el-form-item label="添加角色" class="remark">
 		   	<el-transfer v-model="selectedRoles" :data="roles"  :titles="['待选角色', '已选角色']"></el-transfer>
 		   </el-form-item>
 		</el-form>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogVisible"
+		  size="tiny">
+		  <span>新用户添加成功!<br>请继续添加或进行其他操作。</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 
@@ -61,6 +64,7 @@ import axios from 'axios';
 export default {
     data() {
       return {
+      	dialogVisible:false,
       	options:'',
       	roles: [],          //获取的所有角色
       	selectedRoles:[],   //选中的角色
@@ -94,6 +98,12 @@ export default {
     methods:{
     	submite(){
     		this.formLabelAlign.roleIds = this.selectedRoles.join(',');
+    		for(var key in this.formLabelAlign){
+    			if(this.formLabelAlign[key]==''){
+    				this.$message.error('每项必填！请补全信息！');
+    				return false;
+    			}
+    		}
     		axios({
     			method: 'POST',
     			url:'http://52.80.81.221:12345/admin/user/save',
@@ -110,9 +120,19 @@ export default {
     			data:this.formLabelAlign
     		}).then( res =>{
 				console.log(res)
-				this.$message('添加成功！')
-		})	
-    		
+				this.dialogVisible = true;
+				this.selectedRoles = [];
+				this.formLabelAlign ={
+								        name: '',
+								        gender: '',
+								        roleIds:'',
+								        phone:'',
+								        orgTitle:'',
+								        orgId:'',
+								        email:''
+								//      password: '',
+								     }
+				})	
     	}
     }
   }

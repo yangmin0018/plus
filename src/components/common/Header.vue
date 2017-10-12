@@ -15,11 +15,18 @@
     </div>
 </template>
 <script>
+	import axios from 'axios';	
     export default {
         data() {
             return {
-                name: 'linxin'
+                name: '未登录'
             }
+        },
+        mounted(){
+	        	let username = localStorage.getItem('ms_username');
+	        	axios.get('http://52.80.81.221:12345/admin/user/?&query='+username).then( res =>{
+	    			console.log(res);
+	    		})
         },
         computed:{
             username(){
@@ -30,7 +37,7 @@
         methods:{
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
+                    localStorage.removeItem('ms_password')
                     this.$router.push('/login');
                 }
             }

@@ -19,6 +19,7 @@
 </template>
 
 <script>
+	import axios from 'axios';
     export default {
         data: function(){
             return {
@@ -36,13 +37,26 @@
                 }
             }
         },
+        mounted(){
+        	this.ruleForm.username = localStorage.getItem('ms_username');
+        	this.ruleForm.password = localStorage.getItem('ms_password');
+        },
         methods: {
             submitForm(formName) {
                 const self = this;
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/readme');
+                    	axios.post('http://52.80.81.221:12345/admin/validate?username='+this.ruleForm.username+'&password='+this.ruleForm.password).then( res=>{
+                    		console.log(res)
+                    		if(res.data.data != null){
+                    			console.log('成功');
+	                    		localStorage.setItem('ms_password',self.ruleForm.password);
+	                    		localStorage.setItem('ms_username',self.ruleForm.username);
+		                        self.$router.push('/readme');
+                    		}else{
+                    			alert('账号或密码错误!')
+                    		}
+                    	});
                     } else {
                         console.log('error submit!!');
                         return false;
