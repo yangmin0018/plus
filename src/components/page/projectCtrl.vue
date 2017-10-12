@@ -47,7 +47,7 @@
 	    <el-table-column
 	    	align='center'
 	      prop="name"
-	      label="姓名"
+	      label="创建人"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
@@ -59,12 +59,18 @@
 	    <el-table-column
 	    	align='center'
 	      prop="data.title"
-	      label="公告标题"
+	      label="项目标题"
+	      min-width="120">
+	    </el-table-column>
+	    <el-table-column
+	    	align='center'
+	      prop="data.title"
+	      label="项目目标"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column 
 	    	align='center'
-	      label="发布状态"
+	      label="完成状态"
 	      min-width="120">
 	      <template scope="scope">
 	      	<span style="color: greenyellow;">已发布</span>

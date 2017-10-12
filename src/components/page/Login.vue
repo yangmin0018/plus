@@ -49,7 +49,7 @@
                     	axios.post('http://52.80.81.221:12345/admin/validate?username='+this.ruleForm.username+'&password='+this.ruleForm.password).then( res=>{
                     		console.log(res)
                     		if(res.data.data != null){
-                    			console.log('成功');
+                    			console.log('成功登录');
 	                    		localStorage.setItem('ms_password',self.ruleForm.password);
 	                    		localStorage.setItem('ms_username',self.ruleForm.username);
 		                        self.$router.push('/readme');

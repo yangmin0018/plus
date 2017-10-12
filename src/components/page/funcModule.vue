@@ -28,7 +28,8 @@ import axios from 'axios';
 export default {
     data() {
       return {
-        roles: [],   //有所角色
+        roles: [],   //有所角色 key和lable
+        rolesAll:'',  //所有角色的所有信息
         value: '',   //选择角色
         tableData:'',
         total:'',
@@ -40,6 +41,7 @@ export default {
     mounted(){
     	//角色选择
 		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+			this.rolesAll = res.data.data;
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
 				var obj = {};
@@ -47,6 +49,7 @@ export default {
 				obj.label = getRole[i].description;
 				this.roles.push( obj );
 			}
+			console.log(res)
 		});
 		//功能选择
 		axios.get('http://52.80.81.221:12345/admin/pms/resource').then( res =>{
@@ -65,8 +68,17 @@ export default {
 	    roleChangeSearch(a){
 	    	this.roleId = a;
 	    	console.log(this.roleId)
+	    	for(var i=0;i<this.rolesAll.length;i++){
+	    		if(this.rolesAll[i].id == a){
+	    			this.selectedModul = this.rolesAll[i].resourceIdLst;
+	    			console.log(this.moduls)
+	    			console.log(this.selectedModul)
+	    			return false;
+	    		}
+	    	}
 	    },
 	    submit(){
+	    	console.log(this.selectedModul)
 	    	if(!this.roleId){
 	    		this.$message.error('请选择角色!');
 	    		return false;

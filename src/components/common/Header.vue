@@ -19,19 +19,21 @@
     export default {
         data() {
             return {
-                name: '未登录'
+                name:'未登录'
             }
         },
-        mounted(){
-	        	let username = localStorage.getItem('ms_username');
-	        	axios.get('http://52.80.81.221:12345/admin/user/?&query='+username).then( res =>{
-	    			console.log(res);
-	    		})
-        },
+//      mounted(){
+//	        	let username = localStorage.getItem('ms_username');
+//	        	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=1&query='+username).then( res =>{
+//	    			console.log(res);
+//	    			username = res.data.data.list[0].name;
+//	    			return username ? username : this.name;
+//	    		})
+//      },
         computed:{
             username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
+            	let username = localStorage.getItem('ms_username');
+	    		return username ? username : this.name;
             }
         },
         methods:{
