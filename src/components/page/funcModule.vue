@@ -41,12 +41,12 @@ export default {
     mounted(){
     	//角色选择
 		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+			
 			this.rolesAll = res.data.data;
-			var getRole = res.data.data;
-			for(var i=0;i<getRole.length;i++){
+			for(var i=0;i<this.rolesAll.length;i++){
 				var obj = {};
-				obj.key = getRole[i].id;
-				obj.label = getRole[i].description;
+				obj.key = this.rolesAll[i].id;
+				obj.label = this.rolesAll[i].description;
 				this.roles.push( obj );
 			}
 			console.log(res)
@@ -107,6 +107,11 @@ export default {
     		}).then( res =>{
     			this.$message('设置成功！');
 				console.log(res)
+				//提交之后，重新获取最新数据更新 this.rolesAll
+				axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+					this.rolesAll = res.data.data;
+					console.log(res)
+				});
 			})	
 	    }
     }

@@ -101,7 +101,7 @@
 						      min-width="120">
 						      <template scope="scope">
 							      	<span v-if="scope.row.status" style="color: gainsboro">禁用</span>
-							      	<span v-else style="color: greenyellow;">激活</span>
+							      	<span v-else style="color: #2ba245;">激活</span>
 							  </template>
 						    </el-table-column>
 						  </el-table>
@@ -336,7 +336,7 @@ export default {
         	this.radio = '';
         },
         cancel(){
-	        	this.inputTxt = '';
+	        	this.radio2 = '';
         },
         //指定某人审批确定按钮
         savePerson2(){

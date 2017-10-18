@@ -22,8 +22,17 @@
 			    </el-option>
 		  	</el-select>
 		  	<router-link to="/newAdd"><el-button>新增</el-button></router-link>
+		  	<router-link to="/modify"><el-button @click="modify">修改</el-button></router-link>
 		  	<el-button @click="stop">停用</el-button>
 		  	<el-button @click="activation">激活</el-button>
+		  	<el-select  v-model="state" @change="stateChangeSearch" placeholder="可根据激活状态选择" style="width: auto;">
+			    <el-option
+			      v-for="item in states"
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id">
+			    </el-option>
+		  	</el-select>
 		</div>
 	  <el-table
 	    ref="multipleTable"
@@ -39,11 +48,16 @@
 	    <el-table-column
 	      prop="userId"
 	      label="序号"
-	      min-width="120">
+	      min-width="60">
 	    </el-table-column>
 	    <el-table-column
 	      prop="name"
 	      label="姓名"
+	      min-width="120">
+	    </el-table-column>
+	    <el-table-column
+	      prop="orgTitle"
+	      label="职务"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
@@ -57,7 +71,7 @@
 	      <template scope="scope">
 	      	<el-button
 	          size="small"
-	          @click="rest">密码重置
+	          @click="rest(scope.row)">密码重置
 	        </el-button>
 	      </template>
 	    </el-table-column>
@@ -67,7 +81,7 @@
 	      min-width="120">
 	      <template scope="scope">
 		      	<span v-if="scope.row.status"  style="color: gainsboro">禁用</span>
-		      	<span v-else style="color: greenyellow;">激活</span>
+		      	<span v-else style="color: #2ba245;">激活</span>
 		  </template>
 	    </el-table-column>
 		    
@@ -86,6 +100,7 @@
                     :total="total">
             </el-pagination>
      </div>
+    
   </div>
 </template>
 
@@ -94,30 +109,49 @@
   export default {
     data:function() {
       return {
+      	dialogVisible:false,
       	tableData:[],
-        multipleSelection: '',
+        multipleSelection: [],
         options: [{
-          value: '0',
-          label: '所有'
+          id: '0',
+          name: '所有部门'
         }],
         value:'0',      //部门选择编号
         queryVal:'',    //query查询字符串
         currentPage:1,  //分页的 当前页
         pageSize:10 ,    //每页显示条数
-        total:0
+        total:0,
+        state:'',       //根据状态选择，默认3（所有状态）
+        states:[{
+		        	id:3,
+		        	name:'所有状态'
+        		},
+        		{
+		        	id:0,
+		        	name:'已激活'
+        		},
+        		{
+	        		id:2,
+		        	name:'未激活'	
+        		}
+       		]
       }
     },
 	mounted(){
-		axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId=0'+'&query='+this.queryVal).then( res =>{
+		axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId=0&state=4'+'&query='+this.queryVal).then( res =>{
 			this.total = res.data.data.total;
 			this.tableData = res.data.data.list;
 			console.log(res)
+			
 		})
     	axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+    		console.log(res)
 			this.options = res.data.data.slice(1) ;
-			this.options.splice(0,0, {id:'0',name:'所有'} )
-			
+			this.options.splice(0,0, {id:'0',name:'所有部门'} );
+			//弹出框部门选择项
+			this.dialogOptions = this.options;
 		})	
+		
 	},
     methods: {
     	//公共请求：分页数据，总页数，当前页展示
@@ -128,25 +162,43 @@
 	    },
     //根据输入条件选择
     stringQuerySearch(){
-    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&query='+this.queryVal).then( res =>{
+    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
     		this.public(res);
     		})
     	
     },
+    //根据激活状态选择
+    stateChangeSearch(a){
+    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
+    		this.public(res);
+    		console.log(res)
+    	})
+    },
     //根据部门选择
-    valChangeSearch(){
-    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value).then( res =>{
+    valChangeSearch(a){
+    	console.log(a)
+    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state).then( res =>{
+			console.log(this.state)
 			this.public(res);
 			console.log(res)
 		})
     },
     modifyRow(){
-    	
+    },
+    modify(){
+    	if(this.multipleSelection.length==0){
+    		this.$message.error('请先选择您要修改的用户!')
+    	}else if(this.multipleSelection.length > 1){
+    		this.$message.error('一次只能选择修改一位用户!')
+    	}else{
+    		localStorage.setItem('personM',JSON.stringify(this.dialogSelectedRoles[0]))
+    		console.log(this.dialogSelectedRoles[0])
+    	}
     },
     //重置密码
     rest(row){
-    	console.log(row)
-    	axios.post('http://52.80.81.221:12345/admin/user/resetPwd/',{uid:row.userId}).then( res =>{
+    	console.log(row.userId)
+    	axios.post('http://52.80.81.221:12345/admin/user/resetPwd?uid='+row.userId).then( res =>{
     		this.$alert('您的默认密码为：888888', '密码重置成功！', {showClose:false,confirmButtonText: '确定'});
     	})
     },
@@ -160,8 +212,11 @@
         }
       },
       handleSelectionChange(selection) {
-        this.multipleSelection = selection;
-        console.log(selection)
+        this.dialogSelectedRoles = this.multipleSelection = selection;
+        if(this.multipleSelection.length==0){
+        	this.multipleSelection = '';
+        }
+        console.log(this.multipleSelection)
       },
       //停用与激活 公用状态请求
       publicStatus(obj){
@@ -189,7 +244,7 @@
       
       //暂时用延时GET请求刷新数据
       stop(){
-      	if(!this.multipleSelection){
+      	if(this.multipleSelection.length==0){
       		this.$message({
 			    message: '请选择用户',
 			    type: 'warning'
@@ -200,20 +255,12 @@
       	this.publicStatus(obj);
       	this.$refs.multipleTable.clearSelection();
       	this.$message({
-		    message: '操作成功，请刷新查看',
+		    message: '操作成功，请按F5刷新查看',
 		    type: 'warning'
 		});
-        	
-//    	var This = this;
-//    	setTimeout(function(){
-//    		axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+This.value+'&query='+This.queryVal).then( res =>{
-//  		This.public(res);
-//	    	console.log(res)
-//  		})
-//    	},1000)
       },
       activation(){
-      	if(!this.multipleSelection){
+      	if(this.multipleSelection.length==0){
       		this.$message({
 			    message: '请选择用户',
 			    type: 'warning'
@@ -224,7 +271,7 @@
       	this.publicStatus(obj);
       	this.$refs.multipleTable.clearSelection();
       	this.$message({
-		    message: '操作成功，请刷新查看',
+		    message: '操作成功，请按F5刷新查看',
 		    type: 'warning'
 		});
       },
@@ -235,8 +282,9 @@
             },
             getData(val){
                 let self = this;
-                axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&orgId='+this.value+'&query='+this.queryVal).then( res => {
+                axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res => {
                      this.tableData = res.data.data.list;
+                     console.log(res)
                 })
             },
             search(){
@@ -258,8 +306,12 @@
 		width: 75%;
 	}
 	.search button{
+		margin-left: 5px;
 	}
 	.cell{
 		text-align: center;
+	}
+	.el-button+.el-button {
+	    margin-left: 0;
 	}
 </style>

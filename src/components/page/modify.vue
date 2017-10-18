@@ -3,7 +3,7 @@
 		<div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-date"></i> 用户管理</el-breadcrumb-item>
-                <el-breadcrumb-item>新增用户</el-breadcrumb-item>
+                <el-breadcrumb-item>用户修改</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
 		<div class="btn">
@@ -16,8 +16,12 @@
 		  </el-form-item>
 		   <el-form-item label="性别">
 		    <el-select v-model="formLabelAlign.gender" >
-		      <el-option label="男" value=true></el-option>
-		      <el-option label="女" value=false></el-option>
+		      	<el-option
+			      v-for="item in genderOptions"
+			      :key="item.value"
+			      :label="item.label"
+			      :value="item.value">
+			    </el-option>
 		    </el-select>
 		  </el-form-item>
 		  <el-form-item label="手机号码">
@@ -73,12 +77,24 @@ export default {
           phone:'',
           orgTitle:'',
           orgId:'',
-          email:''
-//        password: '',
-        }
+          email:'',
+          userId:''
+        },
+        genderOptions:[
+        	{
+        		value:true,
+        		label:'男'
+        	},
+        	{
+        		value:false,
+        		label:'女'
+        	}
+        ]
       };
     },
     mounted(){
+    	console.log(JSON.parse(localStorage.getItem('personM')))
+    	this.formLabelAlign = JSON.parse(localStorage.getItem('personM'));
 		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
@@ -90,20 +106,40 @@ export default {
 		});
 		axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
 			this.options = res.data.data ;
+			console.log(this.options)
+		})	
+		axios.get('http://52.80.81.221:12345/admin/pms/'+this.formLabelAlign.userId+'/role').then( res =>{
+			console.log(res)
+			for(var i=0;i<res.data.data.length;i++){
+				this.selectedRoles.push(res.data.data[i]['roleId'])
+			}
 		})	
 	},
     methods:{
     	submite(){
-    		this.formLabelAlign.roleIds = this.selectedRoles.join(',');
-    		for(var key in this.formLabelAlign){
-    			if(this.formLabelAlign[key]==''){
-    				this.$message.error('每项必填！请补全信息！');
-    				return false;
-    			}
-    		}
+			
+			//删除暂时不用传的数据
+			delete this.formLabelAlign.status
+			delete this.formLabelAlign.updatedTime
+			delete this.formLabelAlign.avatar
+			delete this.formLabelAlign.roleLevel
+			delete this.formLabelAlign.birthday
+			delete this.formLabelAlign.intro
+			delete this.formLabelAlign.location
+			delete this.formLabelAlign.nickName
+			delete this.formLabelAlign.qq
+			delete this.formLabelAlign.wechat
+			delete this.formLabelAlign.orgName
+//  		for(var key in this.formLabelAlign){
+//  			if(this.formLabelAlign[key]==''){
+//  				this.$message.error('每项必填！请补全信息！');
+//  				return false;
+//  			}
+//  		}
+			console.log(this.formLabelAlign)
     		axios({
     			method: 'POST',
-    			url:'http://52.80.81.221:12345/admin/user/save',
+    			url:'http://52.80.81.221:12345/admin/user/save/',
     			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {
@@ -117,17 +153,15 @@ export default {
     			data:this.formLabelAlign
     		}).then( res =>{
 				console.log(res)
-				this.dialogVisible = true;
 				this.selectedRoles = [];
 				this.formLabelAlign ={
 								        name: '',
 								        gender: '',
-								        roleIds:'',
 								        phone:'',
 								        orgTitle:'',
 								        orgId:'',
-								        email:''
-								//      password: '',
+								        email:'',
+								        userId:''
 								     }
 				})	
     	}

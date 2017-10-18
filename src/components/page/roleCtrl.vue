@@ -42,12 +42,6 @@
 	      label="用户数"
 	      min-width="120">
 	    </el-table-column>
-	    <el-table-column
-	    	align='center'
-	      prop="orgTitle"
-	      label="修改时间"
-	      min-width="120">
-	    </el-table-column>
 	  </el-table>
 	  <div class="pagination">
             <el-pagination
@@ -65,11 +59,6 @@
 		    </el-form-item>
 		    <el-form-item label="角色名称" :label-width="formLabelWidth">
 		      <el-input v-model="form.description" auto-complete="off"></el-input>
-		    </el-form-item>
-		    <el-form-item label="是否可用" :label-width="formLabelWidth">
-		        <el-radio class="radio" v-model="form.available" label=true>是</el-radio>
-  				<el-radio class="radio" v-model="form.available" label=false>否</el-radio>
-		      
 		    </el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
@@ -100,7 +89,7 @@ export default {
         form: {
           role: '',
           description: '',
-          available: ''
+          available: true
         },
         formLabelWidth: '120px'
       }
@@ -138,26 +127,36 @@ export default {
 	       };
     		this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
 	          confirmButtonText: '确定',
-	          cancelButtonText: '取消',
+	          cancelButtonText:'取消',
 	          type: 'warning',
 	          showClose:false,
 	          closeOnClickModal:false
 	       }).then(() => {
-	          axios.delete('http://52.80.81.221:12345/admin/pms/role/'+this.selectedRow[0].id).then(
-	          	res=>console.log(res)
-	          );
-	          this.$message({
-	            type: 'success',
-	            message: '删除成功!'
-	          });
-	         //找到tableData里面对应的数据删除
-	          for(var i=0;i<this.tableData.length;i++){
-	          		if( this.selectedRow[0].id == this.tableData[i].id ){
-	          			var index = this.tableData.indexOf( this.tableData[i] );
-	          			this.tableData.splice(index,1);
-	          			return false;
-	          		}
-	          }
+	       		if(this.selectedRow[0].memberCount > 0){
+					this.$confirm('删除操作仅适用于未关联任何用户的角色!', '提示', {
+			            confirmButtonText: '确定',
+			            showCancelButton:false,
+			            type: 'warning',
+			            showClose:false,
+			            closeOnClickModal:false
+			        })
+	       		}else{
+	       			axios.delete('http://52.80.81.221:12345/admin/pms/role/'+this.selectedRow[0].id).then(
+			          	res=>console.log(res)
+			        );
+			          this.$message({
+			            type: 'success',
+			            message: '删除成功!'
+			        });
+			         //找到tableData里面对应的数据删除
+			          	for(var i=0;i<this.tableData.length;i++){
+			          		if( this.selectedRow[0].id == this.tableData[i].id ){
+			          			var index = this.tableData.indexOf( this.tableData[i] );
+			          			this.tableData.splice(index,1);
+			          			return false;
+			          	}
+			        }
+	       		}
 	        }).catch(() => {
 	          this.$message({
 	            type: 'info',
@@ -166,8 +165,10 @@ export default {
 	        });
     	},
     	submit(){
-    		this.form.available = this.form.available == 'true'?true:false;
-    		
+    		if(this.form.role==''||this.form.description==''){
+    			this.$message.error('请填写完整信息！')
+    			return false;
+    		}
     		axios({
      			method: 'POST',
      			url:'http://52.80.81.221:12345/admin/pms/role/add',
@@ -185,21 +186,21 @@ export default {
     		}).then(res =>{
     			this.tableData.push(res.data.data)
     			console.log(res)
+				console.log(this.form)
+				this.form = {
+					          role: '',
+					          description: '',
+					          available: true
+					        };
+	    		this.dialogFormVisible = false;
     		})
-			console.log(this.form)
-			this.form = {
-				          role: '',
-				          description: '',
-				          available: ''
-				        };
-    		this.dialogFormVisible = false;
     	},
     	cancel(){
     		this.dialogFormVisible = false;
     		this.form = {
 				          role: '',
 				          description: '',
-				          available: ''
+				          available: true
 				        };
     	}
     }

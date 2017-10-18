@@ -36,37 +36,43 @@
 	    tooltip-effect="dark"
 	    style="width: 100%">
 	    <el-table-column
+	    	align="center"
 	      type="selection"
 	      width="55">
 	    </el-table-column>
 	    <el-table-column
+	    	align="center"
 	      prop="userId"
 	      label="序号"
-	      min-width="120">
+	      min-width="55">
 	      
 	    </el-table-column>
 	    <el-table-column
+	    	align="center"
 	      prop="name"
 	      label="姓名"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
+	    	align="center"
 	      prop="orgName"
 	      label="所属部门"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
+	    	align="center"
 	      prop="orgTitle"
 	      label="职务"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column 
+	    	align="center"
 	      prop="status"
 	      label="状态"
 	      min-width="120">
 	      <template scope="scope">
 		      	<span v-if="scope.row.status" style="color: gainsboro">禁用</span>
-		      	<span v-else style="color: greenyellow;">激活</span>
+		      	<span v-else style="color: #2ba245;">激活</span>
 		  </template>
 	    </el-table-column>
 	  </el-table>
@@ -145,7 +151,7 @@
 				},
     			data:{uids:uids,op:0}
      		}).then( res =>{
-     			this.$message.success('权限更改成功！');
+     			this.$message.success('角色添加成功！');
      			this.$refs.multipleTable.clearSelection();
      			console.log(res)
      		})
@@ -177,7 +183,7 @@
 				},
     			data:{uids:uids,op:1}
      		}).then( res =>{
-     			this.$message.success('权限移除成功！');
+     			this.$message.success('角色移除成功！');
      			this.$refs.multipleTable.clearSelection();
      			console.log(res)
      		})
@@ -226,6 +232,9 @@
 <style>
 	.tab_select{
 		margin-bottom: 20px;
+	}
+	.el-button+.el-button {
+	    margin-left: 0;
 	}
 	.fr{float:right}
 </style>

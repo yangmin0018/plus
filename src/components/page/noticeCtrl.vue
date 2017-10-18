@@ -58,16 +58,18 @@
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="data.title"
 	      label="公告标题"
 	      min-width="120">
+	      <template scope="scope">
+	      	<span>{{scope.row.data[0].value}}</span>
+	      </template>
 	    </el-table-column>
 	    <el-table-column 
 	    	align='center'
 	      label="发布状态"
 	      min-width="120">
 	      <template scope="scope">
-	      	<span style="color: greenyellow;">已发布</span>
+	      	<span style="color: #2ba245;">已发布</span>
 	      </template>
 	    </el-table-column>
 	    <el-table-column 
@@ -135,8 +137,8 @@
     methods: {
     	handleEdit(index, row){
     		this.dialogVisible = true;
-    		this.content = row.data.content;
-    		this.title = row.data.title;
+    		this.content = row.data[1].value;
+    		this.title = row.data[0].value;
     		 console.log(index, row);
     	},
     	handleDelete(index, row){

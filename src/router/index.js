@@ -26,6 +26,10 @@ export default new Router({
                     component: resolve => require(['../components/page/newAdd.vue'], resolve)     
                 },
                 {
+                    path: '/modify',
+                    component: resolve => require(['../components/page/modify.vue'], resolve)     
+                },
+                {
                     path: '/funcModule',
                     component: resolve => require(['../components/page/funcModule.vue'], resolve)     
                 },
