@@ -93,8 +93,9 @@ export default {
       };
     },
     mounted(){
-    	console.log(JSON.parse(localStorage.getItem('personM')))
-    	this.formLabelAlign = JSON.parse(localStorage.getItem('personM'));
+    	
+//  	console.log(JSON.parse(localStorage.getItem('personM')))
+    	this.formLabelAlign = localStorage.getItem('personM')?JSON.parse(localStorage.getItem('personM')):{};
 		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
@@ -163,7 +164,29 @@ export default {
 								        email:'',
 								        userId:''
 								     }
-				})	
+				
+				localStorage.setItem('personM','')
+				});
+				//角色修改
+//			axios({
+//   			method: 'POST',
+//   			url:'http://52.80.81.221:12345/admin/pms/role/'+this.value+'/BatchOP',
+//   			transformRequest: [function(data) {
+//					let ret = ''
+//					for(let it in data) {
+//						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+//					}
+//						return ret
+//					}],
+//				headers:{
+//					'Content-Type': 'application/x-www-form-urlencoded'
+//				},
+//  			data:{uids:uids,op:0}
+//   		}).then( res =>{
+//   			this.$message.success('角色添加成功！');
+//   			this.$refs.multipleTable.clearSelection();
+//   			console.log(res)
+//   		});
     	}
     }
   }
