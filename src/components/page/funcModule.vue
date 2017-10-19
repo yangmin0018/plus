@@ -16,7 +16,7 @@
 		  </el-select>
 		  <el-button @click="submit">保存</el-button>
 		  <div class="remark mt">
-		  	  	<el-transfer v-model="selectedModul" :data="moduls"  :titles="['待选模块', '已选模块']"></el-transfer>
+		  	  	<el-transfer v-model="selectedModul" @change="handleChange" :data="moduls"  :titles="['待选模块', '已选模块']"></el-transfer>
 		  </div>
 		  
 	</div>
@@ -59,6 +59,7 @@ export default {
 				var obj = {};
 				obj.key = getRole[i].id;
 				obj.label = getRole[i].name;
+				obj.disabled = true;
 				this.moduls.push( obj );
 			}
 		});
@@ -67,7 +68,10 @@ export default {
     	//角色选择
 	    roleChangeSearch(a){
 	    	this.roleId = a;
-	    	console.log(this.roleId)
+	    	console.log(this.roleId);
+	    	for(var i=0;i<this.moduls.length;i++){
+	    		delete this.moduls[i].disabled;
+	    	}
 	    	for(var i=0;i<this.rolesAll.length;i++){
 	    		if(this.rolesAll[i].id == a){
 	    			this.selectedModul = this.rolesAll[i].resourceIdLst;
@@ -75,6 +79,58 @@ export default {
 	    			console.log(this.selectedModul)
 	    			return false;
 	    		}
+	    	}
+	    },
+	    handleChange(value, direction, movedKeys){
+	    	console.log(value, direction, movedKeys);
+	    	if(direction=='right'){
+	    		axios({
+	    			method: 'POST',
+	    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/AddResource',
+	    			transformRequest: [function(data) {
+						let ret = ''
+						for(let it in data) {
+							ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+							return ret
+						}],
+					headers:{
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+	    			data:{resIds:movedKeys}
+	    		}).then( res =>{
+	    			this.$message('设置成功！');
+					console.log(res)
+					//提交之后，重新获取最新数据更新 this.rolesAll
+					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+						this.rolesAll = res.data.data;
+						console.log(res)
+					});
+				})	
+	    	}else if(direction=='left'){
+	    		axios({
+	    			method: 'POST',
+	    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/AddResource',
+	    			transformRequest: [function(data) {
+						let ret = ''
+						for(let it in data) {
+							ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+							return ret
+						}],
+					headers:{
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+	    			data:{resIds:movedKeys}
+	    		}).then( res =>{
+	    			this.$message('设置成功！');
+					console.log(res)
+					//提交之后，重新获取最新数据更新 this.rolesAll
+					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+						this.rolesAll = res.data.data;
+						console.log(res)
+					});
+				})	
 	    	}
 	    },
 	    submit(){
@@ -90,29 +146,29 @@ export default {
 	    	console.log( this.modulId);
 	    	
 	    	var obj = {resIds:this.modulId};
-	    	axios({
-    			method: 'POST',
-    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/AddResource',
-    			transformRequest: [function(data) {
-					let ret = ''
-					for(let it in data) {
-						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-					}
-						return ret
-					}],
-				headers:{
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-    			data:obj
-    		}).then( res =>{
-    			this.$message('设置成功！');
-				console.log(res)
-				//提交之后，重新获取最新数据更新 this.rolesAll
-				axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
-					this.rolesAll = res.data.data;
-					console.log(res)
-				});
-			})	
+//	    	axios({
+//  			method: 'POST',
+//  			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/AddResource',
+//  			transformRequest: [function(data) {
+//					let ret = ''
+//					for(let it in data) {
+//						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+//					}
+//						return ret
+//					}],
+//				headers:{
+//					'Content-Type': 'application/x-www-form-urlencoded'
+//				},
+//  			data:obj
+//  		}).then( res =>{
+//  			this.$message('设置成功！');
+//				console.log(res)
+//				//提交之后，重新获取最新数据更新 this.rolesAll
+//				axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+//					this.rolesAll = res.data.data;
+//					console.log(res)
+//				});
+//			})	
 	    }
     }
   }

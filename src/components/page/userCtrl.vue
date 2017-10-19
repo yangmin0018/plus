@@ -39,7 +39,6 @@
 	    :data="tableData"
 	    tooltip-effect="dark"
 	    style="width: 100%"
-	    @row-dblclick="modifyRow"
 	    @selection-change="handleSelectionChange">
 	    <el-table-column
 	      type="selection"
@@ -80,8 +79,8 @@
 	      label="状态"
 	      min-width="120">
 	      <template scope="scope">
-		      	<span v-if="scope.row.status"  style="color: gainsboro">禁用</span>
-		      	<span v-else style="color: #2ba245;">激活</span>
+		      	<span v-if="scope.row.status"  class="disStauts">禁用</span>
+		      	<span v-else class="Status">激活</span>
 		  </template>
 	    </el-table-column>
 		    
@@ -111,7 +110,8 @@
       return {
       	dialogVisible:false,
       	tableData:[],
-        multipleSelection: [],
+      	rowIndex:'',
+        multipleSelection:[],
         options: [{
           id: '0',
           name: '所有部门'
@@ -148,8 +148,6 @@
     		console.log(res)
 			this.options = res.data.data.slice(1) ;
 			this.options.splice(0,0, {id:'0',name:'所有部门'} );
-			//弹出框部门选择项
-			this.dialogOptions = this.options;
 		})	
 		
 	},
@@ -183,16 +181,14 @@
 			console.log(res)
 		})
     },
-    modifyRow(){
-    },
     modify(){
     	if(this.multipleSelection.length==0){
     		this.$message.error('请先选择您要修改的用户!')
     	}else if(this.multipleSelection.length > 1){
     		this.$message.error('一次只能选择修改一位用户!')
     	}else{
-    		localStorage.setItem('personM',JSON.stringify(this.dialogSelectedRoles[0]))
-    		console.log(this.dialogSelectedRoles[0])
+    		localStorage.setItem('personM',JSON.stringify(this.multipleSelection[0]))
+    		
     	}
     },
     //重置密码
@@ -212,11 +208,12 @@
         }
       },
       handleSelectionChange(selection) {
-        this.dialogSelectedRoles = this.multipleSelection = selection;
+        this.multipleSelection = selection;
         if(this.multipleSelection.length==0){
         	this.multipleSelection = '';
         }
         console.log(this.multipleSelection)
+        this.rowIndex = this.tableData.indexOf(selection[0])
       },
       //停用与激活 公用状态请求
       publicStatus(obj){
@@ -251,13 +248,19 @@
 			});
 			return false;
       	};
-      	var obj = {uids:'',op:2};
-      	this.publicStatus(obj);
-      	this.$refs.multipleTable.clearSelection();
-      	this.$message({
-		    message: '操作成功，请按F5刷新查看',
-		    type: 'warning'
-		});
+//    	var obj = {uids:'',op:2};
+//    	this.publicStatus(obj);
+//    	this.$refs.multipleTable.clearSelection();
+//    	this.$message({
+//		    message: '操作成功，请按F5刷新查看',
+//		    type: 'warning'
+//		});
+		var otr = document.getElementsByTagName('tr')[this.rowIndex+1];
+		var span = otr.getElementsByTagName('span')[otr.getElementsByTagName('span').length-1];
+		span.className='disStauts';
+		span.innerHTML='禁用';
+		
+		console.log(span)
       },
       activation(){
       	if(this.multipleSelection.length==0){
@@ -314,4 +317,6 @@
 	.el-button+.el-button {
 	    margin-left: 0;
 	}
+	.disStauts{color: gainsboro}
+	.Status{color: #2ba245}
 </style>

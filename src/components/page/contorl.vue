@@ -270,6 +270,7 @@
 				          cancelButtonText: '取消',
 				          type: 'warning',
 				          showClose:false,
+				          closeOnClickModal:false,
 				        }).then(() => {
 				        	axios({ // 发送post表单提交请求
 								method: 'POST',

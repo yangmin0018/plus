@@ -142,8 +142,12 @@
     		 console.log(index, row);
     	},
     	handleDelete(index, row){
-    		alert('没有这个功能')
-    		 console.log(index, row);
+    		console.log(index, row);
+    		axios.delete('http://52.80.81.221:12345/admin/work/appdata/'+row.appdataId).then(res=>{
+    			console.log(res);
+				this.tableData.splice(index,1);
+    			this.$message('删除成功!')
+    		})
     	},
       toggleSelection(rows) {
         if (rows) {

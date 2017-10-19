@@ -10,20 +10,20 @@
 			<el-button @click="submite">确定</el-button>
 			<router-link to="/userCtrl"><el-button>取消</el-button></router-link>
 		</div>
-		<el-form :label-position="labelPosition" class="addperson" label-width="80px" :model="formLabelAlign">
-		  <el-form-item label="姓名">
+		<el-form :label-position="labelPosition" :rules="rules" class="addperson" label-width="80px" :model="formLabelAlign">
+		  <el-form-item label="姓名" prop="name">
 		    <el-input v-model="formLabelAlign.name"></el-input>
 		  </el-form-item>
-		   <el-form-item label="性别">
+		   <el-form-item label="性别" >
 		    <el-select v-model="formLabelAlign.gender" >
 		      <el-option label="男" value=true></el-option>
 		      <el-option label="女" value=false></el-option>
 		    </el-select>
 		  </el-form-item>
-		  <el-form-item label="手机号码">
+		  <el-form-item label="手机号码" prop="phone">
 		    <el-input v-model.number="formLabelAlign.phone"></el-input>
 		  </el-form-item>
-		  <el-form-item label="所属部门">
+		  <el-form-item label="所属部门" prop="orgId">
 		    <el-select v-model="formLabelAlign.orgId">
 		    	<el-option
 			      v-for="item in options"
@@ -75,6 +75,19 @@ export default {
           orgId:'',
           email:''
 //        password: '',
+        },
+        rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' },
+            { min: 2, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          orgId: [
+            { required: true, message: '请选择部门', trigger: 'blur' }
+          ],
+          phone:[
+            { required: true, message: '请输入手机号码'},
+            { type: 'number', message: '电话必须为数字'}
+          ]
         }
       };
     },
