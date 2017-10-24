@@ -187,7 +187,7 @@ export default {
 	    	this.currentPage =1;
 	    },
     	stringQuerySearch(){
-		    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&query='+this.queryVal).then( res =>{
+		    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value1+'&query='+this.queryVal).then( res =>{
 		    		this.public(res);
 		    	})
 		},
@@ -206,15 +206,15 @@ export default {
         },
         getData(val){
         	let self = this;
-	        if(!this.queryVal){
-	        	axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+val+'&pageSize=10&orgId=0').then( res => {
-	            	this.dialogTableData = res.data.data.list;
-	            	this.total = res.data.data.total;
-	            	
-	        	})
-	        	return false;
-	        };
-	        axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&query='+this.queryVal).then( res => {
+//	        if(!this.queryVal){
+//	        	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value1+'&query='+this.queryVal).then( res => {
+//	            	this.dialogTableData = res.data.data.list;
+//	            	this.total = res.data.data.total;
+//	            	
+//	        	})
+//	        	return false;
+//	        };
+	        axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize='+self.pageSize+'&orgId='+this.value1+'&query='+this.queryVal).then( res => {
 	            this.dialogTableData = res.data.data.list;
 	            this.total = res.data.data.total;
 	          
@@ -424,6 +424,7 @@ export default {
 				this.dialogTableData = res.data.data.list;
 				this.total = res.data.data.total;
 				this.currentPage =1;
+				console.log(this.dialogTableData)
 			})
 	    }
     }

@@ -108,12 +108,11 @@ export default {
     methods:{
     	submite(){
     		this.formLabelAlign.roleIds = this.selectedRoles.join(',');
-    		for(var key in this.formLabelAlign){
-    			if(this.formLabelAlign[key]==''){
-    				this.$message.error('每项必填！请补全信息！');
+    		if(this.formLabelAlign.name==''||this.formLabelAlign.phone==''||this.formLabelAlign.orgId==''){
+    				this.$message.error('带*号项必填！请补全信息！');
     				return false;
-    			}
     		}
+    		
     		axios({
     			method: 'POST',
     			url:'http://52.80.81.221:12345/admin/user/save',

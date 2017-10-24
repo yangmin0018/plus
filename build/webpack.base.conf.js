@@ -67,4 +67,10 @@ module.exports = {
     //       manifest: require('./vendor-manifest.json')
     //     })
     // ]
+    plugins:[
+    		new webpack.ProvidePlugin({
+    			$:"jquery",
+    			jQuery:"jquery"
+    		})
+    ]
 }

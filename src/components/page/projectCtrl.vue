@@ -1,70 +1,47 @@
 <template>
 	<div class="">
 		<div class="crumbs">
+			
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-date"></i> 应用管理</el-breadcrumb-item>
                 <el-breadcrumb-item>项目管理</el-breadcrumb-item>
             </el-breadcrumb>
+            
         </div>
-		<!--<div class="tab_select">
-		 	<div class="btn">
-				<el-button @click="submite">新增</el-button>
-				<el-button>取消</el-button>
-			</div>
-		</div>
-		<div class="tab_select">
-		 <el-select v-model="value" placeholder="请选择">
-		    <el-option
-		      v-for="item in options"
-		      :key="item.value"
-		      :label="item.label"
-		      :value="item.value">
-		    </el-option>
-		  </el-select>
-		   <el-select v-model="value1" placeholder="请选择">
-		    <el-option
-		      v-for="item in options1"
-		      :key="item.value"
-		      :label="item.label"
-		      :value="item.value">
-		    </el-option>
-		  </el-select>
-		  <el-button>保存</el-button>
-		</div>-->
+		
 		<el-table
 	    ref="multipleTable"
 	    :data="tableData"
 	    tooltip-effect="dark"
-	    style="width: 100%"
-	    @selection-change="handleSelectionChange">
+	    style="width: 100%">
 	    
 	    <el-table-column
 	    	align='center'
-	      prop="appdataId"
+	      prop="projectId"
 	      label="序号"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="name"
+	      prop="nickName"
 	      label="创建人"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="createTime"
+	      prop="beginTime"
 	      label="创建时间"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="data.title"
+	      prop="projectName"
 	      label="项目标题"
 	      min-width="120">
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="data.title"
+	      prop="projectTarget"
 	      label="项目目标"
 	      min-width="120">
 	    </el-table-column>
@@ -73,7 +50,7 @@
 	      label="完成状态"
 	      min-width="120">
 	      <template scope="scope">
-	      	<span style="color: greenyellow;">已发布</span>
+	      	<span style="color:#2ba245;">已发布</span>
 	      </template>
 	    </el-table-column>
 	    <el-table-column 
@@ -102,22 +79,18 @@
 			    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
 		  </span>
 	   </el-dialog>
+	   
+	   
 	</div>
 </template>
 
 <script>
+	
 	import axios from 'axios';
 	export default {
     data() {
       return {
-        options: [{
-          value: '选项1',
-          label: '系统管理员 '
-        }],
-        options1: [{
-          value: '选项1',
-          label: '销售二部 '
-        }],
+        
         value: '',
         value1: '',
         tableData: [],
@@ -128,40 +101,39 @@
       }
     },
     mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/statics/2?pageNum=1&pageSize=10').then( res =>{
-    		for(var i=0;i<res.data.data.list.length;i++){
-    			var aa = JSON.parse(res.data.data.list[i].data);
-    			res.data.data.list[i].data = aa;
-    		}
+    	axios.get('http://52.80.81.221:12345/admin/project/?pageNum=1&pageSize=10').then( res =>{
+    		console.log(res)
     		this.tableData = res.data.data.list;
-    		
-			console.log(res)
 		});
     },
     methods: {
     	handleEdit(index, row){
     		this.dialogVisible = true;
-    		this.content = row.data.content;
-    		this.title = row.data.title;
+    		this.content = row.projectDesc;
+    		this.title = row.projectName;
     		 console.log(index, row);
     	},
     	handleDelete(index, row){
     		 console.log(index, row);
-    	},
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(this.multipleSelection)
-      },
-      submite(){}
+    		 this.$confirm('此操作将永久删除该条项目, 是否继续?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          showClose:false,
+		      closeOnClickModal:false,
+	          type: 'warning'
+	        }).then(() => {
+	          axios.delete('http://52.80.81.221:12345/admin/project/?projectId='+row.projectId).then(res=>{
+    			console.log(res);
+				this.tableData.splice(index,1);
+    			this.$message.success('删除成功!');
+    		  })
+	        }).catch(() => {
+	          this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	          });          
+	        });
+    	}
     }
   }
 </script>

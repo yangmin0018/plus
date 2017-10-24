@@ -235,7 +235,6 @@
 				
 			},
 			replaceUrl( idx ){
-				
 				if(idx !== null) {
 					this.form.resourceUrl = this.appIconList[idx].iconUrl; // 将选择的图标地址 存起来
 					this.dialogFormVisible2 = false;
@@ -361,27 +360,41 @@
 			},
 			deleteApp(){
 				console.log(this.form.appId)
-				axios.delete('http://52.80.81.221:12345/admin/work/app/'+this.form.appId).then(
-	          		res=>{
-	          			for(var i=0;i<this.appCont.length;i++){
-	          				if(this.appCont[i].appId == this.form.appId){
-	          					var index = this.appCont.indexOf(this.appCont[i]);
-	          					this.appCont.splice(index,1)
-	          					this.dialogFormVisible = false;
-	          					console.log(res);
-	          					return false;
-	          				}
-	          			}
-	          		}
-	          		
-	          	);
+				this.$confirm('此操作将永久删除该应用, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          showClose:false,
+		          closeOnClickModal:false,
+		          type: 'warning'
+		        }).then(() => {
+		        	axios.delete('http://52.80.81.221:12345/admin/work/app/'+this.form.appId).then(
+		          		res=>{
+		          			for(var i=0;i<this.appCont.length;i++){
+		          				if(this.appCont[i].appId == this.form.appId){
+		          					var index = this.appCont.indexOf(this.appCont[i]);
+		          					this.appCont.splice(index,1)
+		          					this.dialogFormVisible = false;
+		          					console.log(res);
+		          					this.$message.success('删除成功!');
+		          					return false;
+		          				}
+		          			}
+		          		}
+		          );
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });
+				
 			},
 			addClass(index) {
 				this.idx = index;
 			},
 			submitApp(idx) { //  提交新建应用所有信息
 				let This = this;
-				if(idx) {
+				if(idx !== null) {
 					this.appMessage[0].resourceUrl = this.appIconList[idx].iconUrl; // 将选择的图标地址 存起来
 					this.idx = '';
 					axios({ // 发送post表单提交请求
@@ -403,6 +416,11 @@
 
 						This.$message('恭喜您，应用创建成功！');
 						This.isCreate = false;
+						console.log(This.appMessage[0])
+						axios.get('http://52.80.81.221:12345/admin/work/app').then(res => {
+							This.appCont = res.data.data;
+							console.log(res)
+						})
 						if(This.appMessage[0].appType == 1) { //  如果应用类型选择  自定义，则跳转自定义页面
 							setTimeout(function() {
 								window.location.href = 'http://52.80.81.221:12345/wwkj/drag.html';

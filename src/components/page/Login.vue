@@ -52,9 +52,10 @@
                     			console.log('成功登录');
 	                    		localStorage.setItem('ms_password',self.ruleForm.password);
 	                    		localStorage.setItem('ms_username',self.ruleForm.username);
+	                    		localStorage.setItem('ms_userId',res.data.data.userId);
 		                        self.$router.push('/readme');
                     		}else{
-                    			alert('账号或密码错误!')
+                    			alert(res.data.resultMsg)
                     		}
                     	});
                     } else {

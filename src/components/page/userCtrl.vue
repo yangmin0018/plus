@@ -236,7 +236,15 @@
 					'Content-Type': 'application/x-www-form-urlencoded'
 				},
 				data:obj
-      	}).then(res=>console.log(res))
+      	}).then(res=>{
+      		console.log(res)
+      		axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+this.currentPage+'&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
+    			this.total = res.data.data.total;
+		    	this.tableData = res.data.data.list;
+		    	this.currentPage =this.currentPage;
+		    	this.$message.success('操作成功!');
+    		})	
+      	})
       },
       
       //暂时用延时GET请求刷新数据
@@ -248,19 +256,11 @@
 			});
 			return false;
       	};
-//    	var obj = {uids:'',op:2};
-//    	this.publicStatus(obj);
-//    	this.$refs.multipleTable.clearSelection();
-//    	this.$message({
-//		    message: '操作成功，请按F5刷新查看',
-//		    type: 'warning'
-//		});
-		var otr = document.getElementsByTagName('tr')[this.rowIndex+1];
-		var span = otr.getElementsByTagName('span')[otr.getElementsByTagName('span').length-1];
-		span.className='disStauts';
-		span.innerHTML='禁用';
+      	var obj = {uids:'',op:2};
+      	this.publicStatus(obj);
+      	this.$refs.multipleTable.clearSelection();
+      	
 		
-		console.log(span)
       },
       activation(){
       	if(this.multipleSelection.length==0){
@@ -273,15 +273,12 @@
       	var obj = {uids:'',op:0};
       	this.publicStatus(obj);
       	this.$refs.multipleTable.clearSelection();
-      	this.$message({
-		    message: '操作成功，请按F5刷新查看',
-		    type: 'warning'
-		});
       },
       handleCurrentChange(val){
                 this.cur_page = val;
                 this.getData(val);
                 this.currentPage = val;
+                console.log(this.currentPage)
             },
             getData(val){
                 let self = this;

@@ -52,9 +52,11 @@
 		  title="提示"
 		  :visible.sync="dialogVisible"
 		  size="tiny">
-		  <span>新用户添加成功!<br>请继续添加或进行其他操作。</span>
+		  <span>用户修改成功!</span>
 		  <span slot="footer" class="dialog-footer">
-		    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+		    <router-link to="/userCtrl">
+		    	<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+		    </router-link>
 		  </span>
 		</el-dialog>
 	</div>
@@ -228,10 +230,7 @@ export default {
 									     }
 					//清空本地存储数据
 					localStorage.setItem('personM','');
-					this.$message({
-			            type: 'success',
-			            message: '修改成功!'
-		          	});
+					this.dialogVisible = true
 					});
 	        }).catch(() => {
 	          	this.$message({

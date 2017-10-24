@@ -2,35 +2,11 @@
 	<div class="">
 		<div class="crumbs">
             <el-breadcrumb separator="/">
+            	<el-button @click="addProject" type="success" class="fr">新增公告</el-button>
                 <el-breadcrumb-item><i class="el-icon-date"></i> 应用管理</el-breadcrumb-item>
                 <el-breadcrumb-item>公告管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-		<!--<div class="tab_select">
-		 	<div class="btn">
-				<el-button @click="submite">新增</el-button>
-				<el-button>取消</el-button>
-			</div>
-		</div>
-		<div class="tab_select">
-		 <el-select v-model="value" placeholder="请选择">
-		    <el-option
-		      v-for="item in options"
-		      :key="item.value"
-		      :label="item.label"
-		      :value="item.value">
-		    </el-option>
-		  </el-select>
-		   <el-select v-model="value1" placeholder="请选择">
-		    <el-option
-		      v-for="item in options1"
-		      :key="item.value"
-		      :label="item.label"
-		      :value="item.value">
-		    </el-option>
-		  </el-select>
-		  <el-button>保存</el-button>
-		</div>-->
+       </div>
 		<el-table
 	    ref="multipleTable"
 	    :data="tableData"
@@ -98,10 +74,33 @@
 			    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
 		  </span>
 	   </el-dialog>
+	   
+	   <!--新增项目弹框-->
+	   <el-dialog title="新增项目" :visible.sync="dialogFormVisible">
+		  <el-form :model="noticData">
+		    <el-form-item label="项目标题" :label-width="formLabelWidth">
+		      <el-input v-model="noticData.noticTitle" auto-complete="off"></el-input>
+		    </el-form-item>
+		    <el-form-item label="项目内容" :label-width="formLabelWidth">
+		      <el-input type="textarea" :rows="4" v-model="noticData.noticContent" auto-complete="off"></el-input>
+		    </el-form-item>
+		    <el-form-item label="上传附件" :label-width="formLabelWidth">
+				<form >
+				    <input id="file" name="filename" type="file" @click="submitFile"/>
+				</form>
+				
+		    </el-form-item>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogFormVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="submit">确 定</el-button>
+		  </div>
+		</el-dialog>
 	</div>
 </template>
 
 <script>
+	import $ from 'jquery';
 	import axios from 'axios';
 	export default {
     data() {
@@ -120,21 +119,87 @@
         multipleSelection: [],
         dialogVisible: false,
         content:'',
-        title:''
+        title:'',
+        dialogFormVisible:false,
+        formLabelWidth:'120px',
+        noticData:{
+        	noticTitle:'',
+        	noticContent:'',
+        	fujian:''
+        }
       }
     },
     mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
-    		for(var i=0;i<res.data.data.list.length;i++){
-    			var aa = JSON.parse(res.data.data.list[i].data);
-    			res.data.data.list[i].data = aa;
-    		}
-    		this.tableData = res.data.data.list;
-    		
-			console.log(this.tableData)
-		});
+    	this.pubilcNoticRes();
     },
     methods: {
+    	pubilcNoticRes(){
+    		axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+	    		for(var i=0;i<res.data.data.list.length;i++){
+	    			var aa = JSON.parse(res.data.data.list[i].data);
+	    			res.data.data.list[i].data = aa;
+	    		}
+	    		this.tableData = res.data.data.list.reverse();
+				console.log(this.tableData)
+			});
+    	},
+    	addProject(){
+    		this.dialogFormVisible = true
+    	},
+    	submitFile(){
+    		var This = this;
+				$("#file").on("change", function(){
+				  var formData = new FormData();
+				  var aa = $("#file")[0].files[0];
+				  formData.append("filename",aa);
+				  $.ajax({
+				      url: "http://52.80.81.221:12345/api/work/attachment",
+				      type: "POST",
+				      data: formData,
+				      processData: false,
+				      contentType: false,
+				      success: function(res){
+				            // 根据返回结果指定界面操作
+				            This.noticData.fujian = res.data.url;
+				            alert('上传成功!');
+				      },
+				      error:function(res){
+				      	console.log(res)
+				      }
+				  });
+				});
+		},
+		submit(){
+			this.dialogFormVisible = false;
+			let ms_userId = localStorage.getItem('ms_userId');
+			
+			let data = [{'key':'公告标题','value':this.noticData.noticTitle},{'key':'公告内容','value':this.noticData.noticContent},{'key':'附件','value':this.noticData.fujian}];
+			data = JSON.stringify(data);
+			let formData = {
+				userId:ms_userId,
+				appId:7,
+				data:data
+			}
+//			console.log(formData)
+			axios({
+     			method: 'POST',
+     			url:'http://52.80.81.221:12345/api/work/appdata',
+     			transformRequest: [function(data) {
+					let ret = ''
+					for(let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+					}
+						return ret
+					}],
+				headers:{
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+    			data:formData
+    		}).then(res =>{
+    			console.log(res)
+    			this.pubilcNoticRes();
+    		})
+		},
     	handleEdit(index, row){
     		this.dialogVisible = true;
     		this.content = row.data[1].value;
@@ -143,11 +208,25 @@
     	},
     	handleDelete(index, row){
     		console.log(index, row);
-    		axios.delete('http://52.80.81.221:12345/admin/work/appdata/'+row.appdataId).then(res=>{
+    		this.$confirm('此操作将永久删除该条公告, 是否继续?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          showClose:false,
+		      closeOnClickModal:false,
+	          type: 'warning'
+	        }).then(() => {
+	          axios.delete('http://52.80.81.221:12345/admin/work/appdata/'+row.appdataId).then(res=>{
     			console.log(res);
 				this.tableData.splice(index,1);
-    			this.$message('删除成功!')
-    		})
+    			this.$message.success('删除成功!');
+    		  })
+	        }).catch(() => {
+	          this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	          });          
+	        });
+    		
     	},
       toggleSelection(rows) {
         if (rows) {
