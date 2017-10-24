@@ -22,7 +22,7 @@
 			    </el-option>
 		  	</el-select>
 		  	<router-link to="/newAdd"><el-button>新增</el-button></router-link>
-		  	<router-link to="/modify"><el-button @click="modify">修改</el-button></router-link>
+		  	<el-button @click="modify">修改</el-button>
 		  	<el-button @click="stop">停用</el-button>
 		  	<el-button @click="activation">激活</el-button>
 		  	<el-select  v-model="state" @change="stateChangeSearch" placeholder="可根据激活状态选择" style="width: auto;">
@@ -183,12 +183,12 @@
     },
     modify(){
     	if(this.multipleSelection.length==0){
-    		this.$message.error('请先选择您要修改的用户!')
+    		this.$message.error('请先选择您要修改的用户!');
     	}else if(this.multipleSelection.length > 1){
-    		this.$message.error('一次只能选择修改一位用户!')
+    		this.$message.error('一次只能选择修改一位用户!');
     	}else{
-    		localStorage.setItem('personM',JSON.stringify(this.multipleSelection[0]))
-    		
+    		localStorage.setItem('personM',JSON.stringify(this.multipleSelection[0]));
+    		this.$router.push('/modify');
     	}
     },
     //重置密码

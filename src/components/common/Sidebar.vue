@@ -58,10 +58,10 @@
                         index: '4',
                         title: '应用管理',
                         subs: [
-                            {
-                              index: 'contorl',
-                              title: '控件管理'
-                            },
+//                          {
+//                            index: 'contorl',
+//                            title: '控件管理'
+//                          },
 //                          {
 //                            index: 'kaoqin',
 //                            title: '考勤配置'

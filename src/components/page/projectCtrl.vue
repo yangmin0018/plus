@@ -50,7 +50,7 @@
 	      label="完成状态"
 	      min-width="120">
 	      <template scope="scope">
-	      	<span style="color:#2ba245;">已发布</span>
+	      	<span style="color:#2ba245;">已完成</span>
 	      </template>
 	    </el-table-column>
 	    <el-table-column 

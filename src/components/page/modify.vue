@@ -48,17 +48,7 @@
 		   	<el-transfer v-model="selectedRoles" @change="handleChange" :data="roles"  :titles="['待选角色', '已选角色']"></el-transfer>
 		   </el-form-item>
 		</el-form>
-		<el-dialog
-		  title="提示"
-		  :visible.sync="dialogVisible"
-		  size="tiny">
-		  <span>用户修改成功!</span>
-		  <span slot="footer" class="dialog-footer">
-		    <router-link to="/userCtrl">
-		    	<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-		    </router-link>
-		  </span>
-		</el-dialog>
+		
 	</div>
 </template>
 
@@ -67,7 +57,6 @@ import axios from 'axios';
 export default {
     data() {
       return {
-      	dialogVisible:false,
       	options:'',
       	roles: [],          //获取的所有角色
       	selectedRoles:[],   //选中的角色
@@ -230,7 +219,7 @@ export default {
 									     }
 					//清空本地存储数据
 					localStorage.setItem('personM','');
-					this.dialogVisible = true
+					this.$router.push('/userCtrl');
 					});
 	        }).catch(() => {
 	          	this.$message({
