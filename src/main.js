@@ -10,6 +10,10 @@ import "babel-polyfill";
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
+//线上地址
+//axios.defaults.baseURL = 'http://52.80.82.20:8080';
+//测试地址
+axios.defaults.baseURL = 'http://52.80.81.221:12345';
 
 new Vue({
     router,

@@ -92,7 +92,7 @@ export default {
       };
     },
     mounted(){
-		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+		axios.get('/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
 				var obj = {};
@@ -101,7 +101,7 @@ export default {
 				this.roles.push( obj );
 			}
 		});
-		axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+		axios.get('/admin/node').then( res =>{
 			this.options = res.data.data ;
 		})	
 	},
@@ -115,7 +115,7 @@ export default {
     		
     		axios({
     			method: 'POST',
-    			url:'http://52.80.81.221:12345/admin/user/save',
+    			url:'/admin/user/save',
     			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {

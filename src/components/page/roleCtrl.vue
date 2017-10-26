@@ -95,7 +95,7 @@ export default {
       }
     },
     mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+    	axios.get('/admin/pms/role').then( res =>{
     		this.tableData = res.data.data;
     		this.total = res.data.data.length;
 			console.log(res)
@@ -141,7 +141,7 @@ export default {
 			            closeOnClickModal:false
 			        })
 	       		}else{
-	       			axios.delete('http://52.80.81.221:12345/admin/pms/role/'+this.selectedRow[0].id).then(
+	       			axios.delete('/admin/pms/role/'+this.selectedRow[0].id).then(
 			          	res=>console.log(res)
 			        );
 			          this.$message({
@@ -171,7 +171,7 @@ export default {
     		}
     		axios({
      			method: 'POST',
-     			url:'http://52.80.81.221:12345/admin/pms/role/add',
+     			url:'/admin/pms/role/add',
      			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {

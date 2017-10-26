@@ -39,7 +39,7 @@ export default {
     },
     mounted(){
     	//角色选择
-		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+		axios.get('/admin/pms/role').then( res =>{
 			
 			this.rolesAll = res.data.data;
 			for(var i=0;i<this.rolesAll.length;i++){
@@ -51,7 +51,7 @@ export default {
 			console.log(res)
 		});
 		//功能选择
-		axios.get('http://52.80.81.221:12345/admin/pms/resource').then( res =>{
+		axios.get('/admin/pms/resource').then( res =>{
 			console.log(res)
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
@@ -85,7 +85,7 @@ export default {
 	    	if(direction=='right'){
 	    		axios({
 	    			method: 'POST',
-	    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/BatchResourceOp',
+	    			url:'/admin/pms/role/'+this.roleId+'/BatchResourceOp',
 	    			transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -101,7 +101,7 @@ export default {
 	    			this.$message('设置成功！');
 					console.log(res)
 					//提交之后，重新获取最新数据更新 this.rolesAll
-					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+					axios.get('/admin/pms/role').then( res =>{
 						this.rolesAll = res.data.data;
 						console.log(res)
 					});
@@ -109,7 +109,7 @@ export default {
 	    	}else if(direction=='left'){
 	    		axios({
 	    			method: 'POST',
-	    			url:'http://52.80.81.221:12345/admin/pms/role/'+this.roleId+'/BatchResourceOp',
+	    			url:'/admin/pms/role/'+this.roleId+'/BatchResourceOp',
 	    			transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -125,7 +125,7 @@ export default {
 	    			this.$message('设置成功！');
 					console.log(res)
 					//提交之后，重新获取最新数据更新 this.rolesAll
-					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+					axios.get('/admin/pms/role').then( res =>{
 						this.rolesAll = res.data.data;
 						console.log(res)
 					});

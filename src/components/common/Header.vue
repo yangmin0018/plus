@@ -24,7 +24,7 @@
         },
         mounted(){
 	        	let user = localStorage.getItem('ms_username');
-            	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=1&query='+user).then( res =>{
+            	axios.get('/admin/user/?pageNum=1&pageSize=1&query='+user).then( res =>{
 	    			console.log(res);
 	    			this.username = res.data.data.list[0].name;
 	    		})

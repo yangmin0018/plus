@@ -106,7 +106,7 @@
       }
     },
     mounted(){
-		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+		axios.get('/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
 				var obj = {};
@@ -115,10 +115,10 @@
 				this.roles.push( obj );
 			}
 		});
-		axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+		axios.get('/admin/node').then( res =>{
 			this.org = res.data.data;
 		});
-		axios.get('http://52.80.81.221:12345/admin/node/1/users?pageNum=1&pageSize=10').then( res =>{
+		axios.get('/admin/node/1/users?pageNum=1&pageSize=10').then( res =>{
 			
 			this.total = res.data.data.total;
 			this.tableData = res.data.data.list;
@@ -138,7 +138,7 @@
      		uids = uids.slice(1);
      		axios({
      			method: 'POST',
-     			url:'http://52.80.81.221:12345/admin/pms/role/'+this.value+'/BatchOP',
+     			url:'/admin/pms/role/'+this.value+'/BatchOP',
      			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {
@@ -170,7 +170,7 @@
      		uids = uids.slice(1);
      		axios({
      			method: 'POST',
-     			url:'http://52.80.81.221:12345/admin/pms/role/'+this.value+'/BatchOP',
+     			url:'/admin/pms/role/'+this.value+'/BatchOP',
      			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {
@@ -202,20 +202,20 @@
     getData(val){
         let self = this;
         if(!this.value1){
-        	axios.get('http://52.80.81.221:12345/admin/node/1/users?pageNum='+val+'&pageSize='+self.pageSize).then( res => {
+        	axios.get('/admin/node/1/users?pageNum='+val+'&pageSize='+self.pageSize).then( res => {
             	this.tableData = res.data.data.list;
             	this.total = res.data.data.total;
         	})
         	return false;
         };
-        axios.get('http://52.80.81.221:12345/admin/node/'+this.value1+'/users?pageNum='+val+'&pageSize='+self.pageSize).then( res => {
+        axios.get('/admin/node/'+this.value1+'/users?pageNum='+val+'&pageSize='+self.pageSize).then( res => {
             this.tableData = res.data.data.list;
             this.total = res.data.data.total;
         })
     },
     //部门选择
     valChangeSearch(){
-    	axios.get('http://52.80.81.221:12345/admin/node/'+this.value1+'/users?pageNum=1&pageSize=10').then( res =>{
+    	axios.get('/admin/node/'+this.value1+'/users?pageNum=1&pageSize=10').then( res =>{
 			this.tableData = res.data.data.list;
 			this.total = res.data.data.total;
 			this.currentPage =1;

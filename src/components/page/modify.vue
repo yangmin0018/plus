@@ -88,7 +88,7 @@ export default {
 //  	console.log(JSON.parse(localStorage.getItem('personM')))
     	this.formLabelAlign = localStorage.getItem('personM')?JSON.parse(localStorage.getItem('personM')):{};
 		//请求角色数据
-		axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+		axios.get('/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
 			for(var i=0;i<getRole.length;i++){
 				var obj = {};
@@ -98,12 +98,12 @@ export default {
 			}
 		});
 		//请求部门数据
-		axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+		axios.get('/admin/node').then( res =>{
 			this.options = res.data.data ;
 			console.log(this.options)
 		})	
 		//请求用户拥有的角色数据
-		axios.get('http://52.80.81.221:12345/admin/pms/'+this.formLabelAlign.userId+'/role').then( res =>{
+		axios.get('/admin/pms/'+this.formLabelAlign.userId+'/role').then( res =>{
 			console.log(res)
 			for(var i=0;i<res.data.data.length;i++){
 				this.selectedRoles.push(res.data.data[i]['roleId'])
@@ -121,7 +121,7 @@ export default {
     		if(direction=='right'){
 	    		axios({
 	    			method: 'POST',
-	    			url:'http://52.80.81.221:12345/admin/pms/user/'+this.formLabelAlign.userId+'/BatchOP',
+	    			url:'/admin/pms/user/'+this.formLabelAlign.userId+'/BatchOP',
 	    			transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -137,7 +137,7 @@ export default {
 	    			this.$message('设置成功！');
 					console.log(res)
 					//提交之后，重新获取最新数据更新 this.rolesAll
-					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+					axios.get('/admin/pms/role').then( res =>{
 						this.rolesAll = res.data.data;
 						console.log(res)
 					});
@@ -145,7 +145,7 @@ export default {
 	    	}else if(direction=='left'){
 	    		axios({
 	    			method: 'POST',
-	    			url:'http://52.80.81.221:12345/admin/pms/user/'+this.formLabelAlign.userId+'/BatchOP',
+	    			url:'/admin/pms/user/'+this.formLabelAlign.userId+'/BatchOP',
 	    			transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -161,7 +161,7 @@ export default {
 	    			this.$message('设置成功！');
 					console.log(res)
 					//提交之后，重新获取最新数据更新 this.rolesAll
-					axios.get('http://52.80.81.221:12345/admin/pms/role').then( res =>{
+					axios.get('/admin/pms/role').then( res =>{
 						this.rolesAll = res.data.data;
 						console.log(res)
 					});

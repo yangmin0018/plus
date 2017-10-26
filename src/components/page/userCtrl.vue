@@ -138,13 +138,13 @@
       }
     },
 	mounted(){
-		axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId=0&state=4'+'&query='+this.queryVal).then( res =>{
+		axios.get('/admin/user/?pageNum=1&pageSize=10&orgId=0&state=4'+'&query='+this.queryVal).then( res =>{
 			this.total = res.data.data.total;
 			this.tableData = res.data.data.list;
 			console.log(res)
 			
 		})
-    	axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+    	axios.get('/admin/node').then( res =>{
     		console.log(res)
 			this.options = res.data.data.slice(1) ;
 			this.options.splice(0,0, {id:'0',name:'所有部门'} );
@@ -160,14 +160,14 @@
 	    },
     //根据输入条件选择
     stringQuerySearch(){
-    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
+    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
     		this.public(res);
     		})
     	
     },
     //根据激活状态选择
     stateChangeSearch(a){
-    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
+    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
     		this.public(res);
     		console.log(res)
     	})
@@ -175,7 +175,7 @@
     //根据部门选择
     valChangeSearch(a){
     	console.log(a)
-    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state).then( res =>{
+    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state).then( res =>{
 			console.log(this.state)
 			this.public(res);
 			console.log(res)
@@ -194,7 +194,7 @@
     //重置密码
     rest(row){
     	console.log(row.userId)
-    	axios.post('http://52.80.81.221:12345/admin/user/resetPwd?uid='+row.userId).then( res =>{
+    	axios.post('/admin/user/resetPwd?uid='+row.userId).then( res =>{
     		this.$alert('您的默认密码为：888888', '密码重置成功！', {showClose:false,confirmButtonText: '确定'});
     	})
     },
@@ -224,7 +224,7 @@
       	console.log(obj)
       	axios({
       		method:'POST',
-      		url:'http://52.80.81.221:12345/admin/user/disable',
+      		url:'/admin/user/disable',
       		transformRequest: [function(data) {
 				let ret = '';
 				for(let it in data) {
@@ -238,7 +238,7 @@
 				data:obj
       	}).then(res=>{
       		console.log(res)
-      		axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+this.currentPage+'&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
+      		axios.get('/admin/user/?pageNum='+this.currentPage+'&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
     			this.total = res.data.data.total;
 		    	this.tableData = res.data.data.list;
 		    	this.currentPage =this.currentPage;
@@ -282,7 +282,7 @@
             },
             getData(val){
                 let self = this;
-                axios.get('http://52.80.81.221:12345/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res => {
+                axios.get('/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res => {
                      this.tableData = res.data.data.list;
                      console.log(res)
                 })

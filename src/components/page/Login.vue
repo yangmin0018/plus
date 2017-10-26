@@ -46,7 +46,7 @@
                 const self = this;
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
-                    	axios.post('http://52.80.81.221:12345/admin/validate?username='+this.ruleForm.username+'&password='+this.ruleForm.password).then( res=>{
+                    	axios.post('/admin/validate?username='+this.ruleForm.username+'&password='+this.ruleForm.password).then( res=>{
                     		console.log(res)
                     		if(res.data.data != null){
                     			console.log('成功登录');

@@ -64,6 +64,13 @@
 	      </template>
 	    </el-table-column>
 	  </el-table>
+	  		<el-pagination class="fr"
+            		small
+                    @current-change ="handleCurrentChange"
+                    layout="prev, pager, next"
+                    :current-page="currentPage"
+                    :total="total">
+            </el-pagination>
 	  <el-dialog
 		  :title="title"
 		  :visible.sync="dialogVisible"
@@ -76,12 +83,12 @@
 	   </el-dialog>
 	   
 	   <!--新增项目弹框-->
-	   <el-dialog title="新增项目" :visible.sync="dialogFormVisible">
+	   <el-dialog title="新增公告" :visible.sync="dialogFormVisible">
 		  <el-form :model="noticData">
-		    <el-form-item label="项目标题" :label-width="formLabelWidth">
+		    <el-form-item label="公告标题" :label-width="formLabelWidth">
 		      <el-input v-model="noticData.noticTitle" auto-complete="off"></el-input>
 		    </el-form-item>
-		    <el-form-item label="项目内容" :label-width="formLabelWidth">
+		    <el-form-item label="公告内容" :label-width="formLabelWidth">
 		      <el-input type="textarea" :rows="4" v-model="noticData.noticContent" auto-complete="off"></el-input>
 		    </el-form-item>
 		    <el-form-item label="上传附件" :label-width="formLabelWidth">
@@ -92,7 +99,7 @@
 		    </el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
-		    <el-button @click="dialogFormVisible = false">取 消</el-button>
+		    <el-button @click="cancel">取 消</el-button>
 		    <el-button type="primary" @click="submit">确 定</el-button>
 		  </div>
 		</el-dialog>
@@ -105,14 +112,8 @@
 	export default {
     data() {
       return {
-        options: [{
-          value: '选项1',
-          label: '系统管理员 '
-        }],
-        options1: [{
-          value: '选项1',
-          label: '销售二部 '
-        }],
+        currentPage:1,  //分页的 当前页
+        total:0,
         value: '',
         value1: '',
         tableData: [],
@@ -134,13 +135,26 @@
     },
     methods: {
     	pubilcNoticRes(){
-    		axios.get('http://52.80.81.221:12345/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    		axios.get('/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    			this.total = res.data.data.total;
 	    		for(var i=0;i<res.data.data.list.length;i++){
 	    			var aa = JSON.parse(res.data.data.list[i].data);
 	    			res.data.data.list[i].data = aa;
 	    		}
-	    		this.tableData = res.data.data.list.reverse();
+	    		this.tableData = res.data.data.list;
 				console.log(this.tableData)
+			});
+    	},
+    	handleCurrentChange(val){
+    		console.log(val)
+    		this.currentPage = val;
+    		axios.get('/admin/statics/7?pageNum='+val+'&pageSize=10').then( res =>{
+    			this.total = res.data.data.total;
+	    		for(var i=0;i<res.data.data.list.length;i++){
+	    			var aa = JSON.parse(res.data.data.list[i].data);
+	    			res.data.data.list[i].data = aa;
+	    		}
+	    		this.tableData = res.data.data.list;
 			});
     	},
     	addProject(){
@@ -161,7 +175,7 @@
 				      success: function(res){
 				            // 根据返回结果指定界面操作
 				            This.noticData.fujian = res.data.url;
-				            alert('上传成功!');
+				            console.log(res)
 				      },
 				      error:function(res){
 				      	console.log(res)
@@ -173,8 +187,13 @@
 			this.dialogFormVisible = false;
 			let ms_userId = localStorage.getItem('ms_userId');
 			
-			let data = [{'key':'公告标题','value':this.noticData.noticTitle},{'key':'公告内容','value':this.noticData.noticContent},{'key':'附件','value':this.noticData.fujian}];
-			data = JSON.stringify(data);
+			let data = [{'key':'公告标题','value':this.noticData.noticTitle},{'key':'公告内容','value':this.noticData.noticContent}];
+			if( this.noticData.fujian == '' ){
+				data = JSON.stringify(data);
+			}else{
+				data.push( {'key':'附件','value':this.noticData.fujian} );
+				data = JSON.stringify(data);
+			}
 			let formData = {
 				userId:ms_userId,
 				appId:7,
@@ -183,7 +202,7 @@
 //			console.log(formData)
 			axios({
      			method: 'POST',
-     			url:'http://52.80.81.221:12345/api/work/appdata',
+     			url:'/api/work/appdata',
      			transformRequest: [function(data) {
 					let ret = ''
 					for(let it in data) {
@@ -197,8 +216,22 @@
     			data:formData
     		}).then(res =>{
     			console.log(res)
+    			console.log(formData)
+    			this.noticData = {
+			        noticTitle:'',
+			        noticContent:'',
+			        fujian:''
+			    };
     			this.pubilcNoticRes();
     		})
+		},
+		cancel(){
+			this.dialogFormVisible = false;
+			this.noticData = {
+			        noticTitle:'',
+			        noticContent:'',
+			        fujian:''
+			   };
 		},
     	handleEdit(index, row){
     		this.dialogVisible = true;
@@ -215,10 +248,19 @@
 		      closeOnClickModal:false,
 	          type: 'warning'
 	        }).then(() => {
-	          axios.delete('http://52.80.81.221:12345/admin/work/appdata/'+row.appdataId).then(res=>{
+	          axios.delete('/admin/work/appdata/'+row.appdataId).then(res=>{
     			console.log(res);
+				
+				axios.get('/admin/statics/7?pageNum='+this.currentPage+'&pageSize=10').then( res =>{
+		    		for(var i=0;i<res.data.data.list.length;i++){
+		    			var aa = JSON.parse(res.data.data.list[i].data);
+		    			res.data.data.list[i].data = aa;
+		    		}
+		    		this.total = res.data.data.total;
+		    		this.tableData = res.data.data.list;
+				});
 				this.tableData.splice(index,1);
-    			this.$message.success('删除成功!');
+				this.$message.success('删除成功!');
     		  })
 	        }).catch(() => {
 	          this.$message({

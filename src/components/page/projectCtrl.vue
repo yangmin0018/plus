@@ -69,6 +69,13 @@
 	      </template>
 	    </el-table-column>
 	  </el-table>
+	  		<el-pagination class="fr"
+            		small
+                    @current-change ="handleCurrentChange"
+                    layout="prev, pager, next"
+                    :current-page="currentPage"
+                    :total="total">
+            </el-pagination>
 	  <el-dialog
 		  :title="title"
 		  :visible.sync="dialogVisible"
@@ -90,7 +97,8 @@
 	export default {
     data() {
       return {
-        
+        currentPage:1,  //分页的 当前页
+        total:0,
         value: '',
         value1: '',
         tableData: [],
@@ -101,12 +109,24 @@
       }
     },
     mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/project/?pageNum=1&pageSize=10').then( res =>{
+    	axios.get('/admin/project/?pageNum=1&pageSize=10').then( res =>{
     		console.log(res)
     		this.tableData = res.data.data.list;
+    		this.total = res.data.data.total;
 		});
     },
     methods: {
+    	handleCurrentChange(val){
+    		this.currentPage = val;
+    		axios.get('/admin/project/?pageNum='+val+'&pageSize=10').then( res =>{
+	    		for(var i=0;i<res.data.data.list.length;i++){
+	    			var aa = JSON.parse(res.data.data.list[i].data);
+	    			res.data.data.list[i].data = aa;
+	    		}
+	    		this.tableData = res.data.data.list;
+	    		this.total = res.data.data.total;
+			});
+    	},
     	handleEdit(index, row){
     		this.dialogVisible = true;
     		this.content = row.projectDesc;
@@ -122,10 +142,18 @@
 		      closeOnClickModal:false,
 	          type: 'warning'
 	        }).then(() => {
-	          axios.delete('http://52.80.81.221:12345/admin/project/?projectId='+row.projectId).then(res=>{
+	          axios.delete('/admin/project/?projectId='+row.projectId).then(res=>{
     			console.log(res);
-				this.tableData.splice(index,1);
-    			this.$message.success('删除成功!');
+    			axios.get('/admin/project/?pageNum='+this.currentPage+'&pageSize=10').then( res =>{
+		    		for(var i=0;i<res.data.data.list.length;i++){
+		    			var aa = JSON.parse(res.data.data.list[i].data);
+		    			res.data.data.list[i].data = aa;
+		    		}
+		    		this.tableData = res.data.data.list;
+		    		this.total = res.data.data.total;
+				});
+					this.tableData.splice(index,1);
+	    			this.$message.success('删除成功!');
     		  })
 	        }).catch(() => {
 	          this.$message({

@@ -116,7 +116,7 @@
       }
     },
 	mounted(){
-    	axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-10-10 23:59:59').then( res =>{
+    	axios.get('/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-10-10 23:59:59').then( res =>{
     		
 			console.log(res)
 		});
@@ -159,7 +159,7 @@
 				};
 	    		switch (this.summaryId){
 	    			case '1':
-	    				axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum=1&pageSize=10&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	    				axios.get('/admin/statics/sign?pageNum=1&pageSize=10&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
 	    					this.tableData = res.data.data.list;
 	    					this.total = res.data.data.total;
 	    					this.currentPage =1;
@@ -174,7 +174,7 @@
     	},
     	handleCurrentChange(val){
 	        this.currentPage = val;
-	        axios.get('http://52.80.81.221:12345/admin/statics/sign?pageNum='+val+'&pageSize='+this.pageSize+'&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	        axios.get('/admin/statics/sign?pageNum='+val+'&pageSize='+this.pageSize+'&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
     					this.tableData = res.data.data.list;
     					
 						console.log(res)

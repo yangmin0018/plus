@@ -165,15 +165,15 @@ export default {
     	}
     },
     mounted(){
-		axios.get('http://52.80.81.221:12345/admin/review/apps').then( res =>{
+		axios.get('/admin/review/apps').then( res =>{
 			
 			this.tableData = res.data.data;
 			console.log(this.tableData)
 		});
-		axios.get('http://52.80.81.221:12345/admin/node').then( res =>{
+		axios.get('/admin/node').then( res =>{
 			this.org = res.data.data;
 		});
-		axios.get('http://52.80.81.221:12345/admin/review?pageNum=1&pageSize=12').then( res =>{
+		axios.get('/admin/review?pageNum=1&pageSize=12').then( res =>{
 			console.log(res)
 			console.log(this.reviewsLen)
 		})
@@ -187,12 +187,12 @@ export default {
 	    	this.currentPage =1;
 	    },
     	stringQuerySearch(){
-		    	axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId='+this.value1+'&query='+this.queryVal).then( res =>{
+		    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value1+'&query='+this.queryVal).then( res =>{
 		    		this.public(res);
 		    	})
 		},
 		open(){
-			axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize=10&orgId=0'+'&query='+this.queryVal).then( res =>{
+			axios.get('/admin/user/?pageNum=1&pageSize=10&orgId=0'+'&query='+this.queryVal).then( res =>{
 				this.public(res);
 			})
 		},
@@ -214,7 +214,7 @@ export default {
 //	        	})
 //	        	return false;
 //	        };
-	        axios.get('http://52.80.81.221:12345/admin/user/?pageNum=1&pageSize='+self.pageSize+'&orgId='+this.value1+'&query='+this.queryVal).then( res => {
+	        axios.get('/admin/user/?pageNum=1&pageSize='+self.pageSize+'&orgId='+this.value1+'&query='+this.queryVal).then( res => {
 	            this.dialogTableData = res.data.data.list;
 	            this.total = res.data.data.total;
 	          
@@ -223,7 +223,7 @@ export default {
         //审批选择
     	appValChangeSearch(a){
     		//为了动态获取审批设置，每次选择都请求新数据
-    		axios.get('http://52.80.81.221:12345/admin/review/apps').then( res =>{
+    		axios.get('/admin/review/apps').then( res =>{
 			
 				this.tableData = res.data.data;
 				console.log(this.tableData)
@@ -254,7 +254,7 @@ export default {
       	reviewsPublicPost(){
         		axios({ // 发送post表单提交请求
 					method: 'POST',
-					url: 'http://52.80.81.221:12345/admin/review/'+ this.reviewObj.reviewId,
+					url: '/admin/review/'+ this.reviewObj.reviewId,
 					transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -275,7 +275,7 @@ export default {
        	reviewsPublicPost_2(){
         		axios({ // 发送post表单提交请求
 					method: 'POST',
-					url: 'http://52.80.81.221:12345/admin/review/',
+					url: '/admin/review/',
 					transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -420,7 +420,7 @@ export default {
      	},
      	//部门选择
 	    valChangeSearch(){
-	    	axios.get('http://52.80.81.221:12345/admin/node/'+this.value1+'/users?pageNum=1&pageSize=10').then( res =>{
+	    	axios.get('/admin/node/'+this.value1+'/users?pageNum=1&pageSize=10').then( res =>{
 				this.dialogTableData = res.data.data.list;
 				this.total = res.data.data.total;
 				this.currentPage =1;
