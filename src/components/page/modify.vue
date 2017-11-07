@@ -25,7 +25,7 @@
 		    </el-select>
 		  </el-form-item>
 		  <el-form-item label="手机号码">
-		    <el-input v-model.number="formLabelAlign.phone"></el-input>
+		    <el-input v-model.number="formLabelAlign.phone" @focus="alert"></el-input>
 		  </el-form-item>
 		  <el-form-item label="所属部门">
 		    <el-select v-model="formLabelAlign.orgId">
@@ -58,6 +58,8 @@ export default {
     data() {
       return {
       	options:'',
+      	alertBtn:true,
+      	phone:'',
       	roles: [],          //获取的所有角色
       	selectedRoles:[],   //选中的角色
         labelPosition: 'right',
@@ -87,6 +89,7 @@ export default {
     	
 //  	console.log(JSON.parse(localStorage.getItem('personM')))
     	this.formLabelAlign = localStorage.getItem('personM')?JSON.parse(localStorage.getItem('personM')):{};
+		this.phone = this.formLabelAlign.phone;
 		//请求角色数据
 		axios.get('/admin/pms/role').then( res =>{
 			var getRole = res.data.data;
@@ -111,6 +114,19 @@ export default {
 		})	
 	},
     methods:{
+    	alert(){
+    		if(this.alertBtn){
+    			this.$alert('修改密码将会重置当前用户的账户密码为初始默认密码：888888！', '提示', {
+		          confirmButtonText: '确定',
+		          showClose:false,
+			      closeOnClickModal:false
+		        }).then(() => {
+		          	this.alertBtn = false;
+		        })
+		        
+    		}
+    		
+    	},
     	cancel(){
     		//清空本地存储数据
 			localStorage.setItem('personM','');
@@ -193,7 +209,7 @@ export default {
 				console.log(this.formLabelAlign)
 	    		axios({
 	    			method: 'POST',
-	    			url:'http://52.80.81.221:12345/admin/user/save/',
+	    			url:'/admin/user/save/',
 	    			transformRequest: [function(data) {
 						let ret = ''
 						for(let it in data) {
@@ -207,6 +223,13 @@ export default {
 	    			data:this.formLabelAlign
 	    		}).then( res =>{
 					console.log(res)
+					if(this.phone!==this.formLabelAlign.phone){
+						this.$alert('用户手机号码已变更，登录密码已重置为888888。', '提示', {
+				          confirmButtonText: '确定',
+				          showClose:false,
+					      closeOnClickModal:false
+				        })
+					};
 					this.selectedRoles = [];
 					this.formLabelAlign ={
 									        name: '',
