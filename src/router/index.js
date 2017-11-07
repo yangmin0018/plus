@@ -64,6 +64,34 @@ export default new Router({
                 {
                     path: '/gather',
                     component: resolve => require(['../components/page/gather.vue'], resolve)
+                },
+                {
+                    path: '/ccSP',
+                    component: resolve => require(['../components/page/ccSP.vue'], resolve)
+                },
+                {
+                    path: '/ycSP',
+                    component: resolve => require(['../components/page/ycSP.vue'], resolve)
+                },
+                {
+                    path: '/jbSP',
+                    component: resolve => require(['../components/page/jbSP.vue'], resolve)
+                },
+                {
+                    path: '/jkSP',
+                    component: resolve => require(['../components/page/jkSP.vue'], resolve)
+                },
+                {
+                    path: '/cgSP',
+                    component: resolve => require(['../components/page/cgSP.vue'], resolve)
+                },
+                {
+                    path: '/qjSP',
+                    component: resolve => require(['../components/page/qjSP.vue'], resolve)
+                },
+                {
+                    path: '/wcSP',
+                    component: resolve => require(['../components/page/wcSP.vue'], resolve)
                 }
             ]
         },

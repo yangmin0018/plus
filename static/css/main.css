@@ -195,3 +195,16 @@ a{text-decoration: none}
     margin: 0 auto;
 }
 .fr{float: right;}
+.disStauts{color: gainsboro}
+.Status{color: #2ba245}
+.el-table p{overflow: hidden;}
+.el-table p>span{
+		float: left;
+		width: 50%;
+}
+.el-table p>span:first-child{
+		text-align: right;
+}
+.el-table p>span:last-child{
+	text-align: left;
+}

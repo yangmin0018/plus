@@ -1,6 +1,6 @@
 <template>
     <div class="login-wrap">
-        <div class="ms-title">后台管理系统</div>
+        <div class="ms-title">益阳市城投后台管理系统</div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
@@ -15,6 +15,7 @@
                 <p style="font-size:12px;line-height:30px;color:rgba(255,255,255,0.6);">Tips : 用户名和密码必填。</p>
             </el-form>
         </div>
+       
     </div>
 </template>
 

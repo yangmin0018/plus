@@ -8,7 +8,7 @@
 		<div class="tab_select">
 			<div class="search">
 				<div class="input">
-					<el-input  v-model="queryVal" placeholder="姓名/手机"></el-input>
+					<el-input  v-model="queryVal" placeholder="姓名/手机" ></el-input>
 				</div>
 				<el-button @click="stringQuerySearch">查询</el-button>
 			</div>
@@ -175,7 +175,7 @@
     //根据部门选择
     valChangeSearch(a){
     	console.log(a)
-    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state).then( res =>{
+    	axios.get('/admin/user/?pageNum=1&pageSize=10&orgId='+this.value+'&state='+this.state+'&query='+this.queryVal).then( res =>{
 			console.log(this.state)
 			this.public(res);
 			console.log(res)
@@ -314,6 +314,5 @@
 	.el-button+.el-button {
 	    margin-left: 0;
 	}
-	.disStauts{color: gainsboro}
-	.Status{color: #2ba245}
+	
 </style>

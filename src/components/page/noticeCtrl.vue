@@ -135,7 +135,7 @@
     },
     methods: {
     	pubilcNoticRes(){
-    		axios.get('/admin/statics/7?pageNum=1&pageSize=10').then( res =>{
+    		axios.get('/admin/statics/7?pageNum=1&pageSize=10&beginTime=2000-01-01 00:00:00&endTime=2999-12-01 23:59:59').then( res =>{
     			this.total = res.data.data.total;
 	    		for(var i=0;i<res.data.data.list.length;i++){
 	    			var aa = JSON.parse(res.data.data.list[i].data);
@@ -148,7 +148,7 @@
     	handleCurrentChange(val){
     		console.log(val)
     		this.currentPage = val;
-    		axios.get('/admin/statics/7?pageNum='+val+'&pageSize=10').then( res =>{
+    		axios.get('/admin/statics/7?pageNum='+val+'&pageSize=10&beginTime=2000-01-01 00:00:00&endTime=2999-12-01 23:59:59').then( res =>{
     			this.total = res.data.data.total;
 	    		for(var i=0;i<res.data.data.list.length;i++){
 	    			var aa = JSON.parse(res.data.data.list[i].data);
@@ -166,21 +166,29 @@
 				  var formData = new FormData();
 				  var aa = $("#file")[0].files[0];
 				  formData.append("filename",aa);
-				  $.ajax({
-				      url: "http://52.80.81.221:12345/api/work/attachment",
-				      type: "POST",
-				      data: formData,
-				      processData: false,
-				      contentType: false,
-				      success: function(res){
-				            // 根据返回结果指定界面操作
-				            This.noticData.fujian = res.data.url;
+//				  $.ajax({
+//				      url: "http://52.80.81.221:12345/api/work/attachment",
+//				      type: "POST",
+//				      data: formData,
+//				      processData: false,
+//				      contentType: false,
+//				      success: function(res){
+//				            
+//				            This.noticData.fujian = res.data.url;
+//				            console.log(res)
+//				      },
+//				      error:function(res){
+//				      	console.log(res)
+//				      }
+//				  });
+				  axios({
+				      url: "/api/work/attachment",
+				      method: "POST",
+				      data: formData
+				  }).then(res=>{
+				  	 This.noticData.fujian = res.data.data.url;
 				            console.log(res)
-				      },
-				      error:function(res){
-				      	console.log(res)
-				      }
-				  });
+				  })
 				});
 		},
 		submit(){
@@ -251,7 +259,7 @@
 	          axios.delete('/admin/work/appdata/'+row.appdataId).then(res=>{
     			console.log(res);
 				
-				axios.get('/admin/statics/7?pageNum='+this.currentPage+'&pageSize=10').then( res =>{
+				axios.get('/admin/statics/7?pageNum='+this.currentPage+'&pageSize=10&beginTime=2000-01-01 00:00:00&endTime=2999-12-01 23:59:59').then( res =>{
 		    		for(var i=0;i<res.data.data.list.length;i++){
 		    			var aa = JSON.parse(res.data.data.list[i].data);
 		    			res.data.data.list[i].data = aa;
@@ -282,8 +290,7 @@
       handleSelectionChange(val) {
         this.multipleSelection = val;
         console.log(this.multipleSelection)
-      },
-      submite(){}
+      }
     }
   }
 </script>

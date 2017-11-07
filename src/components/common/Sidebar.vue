@@ -62,10 +62,6 @@
 //                            index: 'contorl',
 //                            title: '控件管理'
 //                          },
-//                          {
-//                            index: 'kaoqin',
-//                            title: '考勤配置'
-//                          },
                             {
                               index: 'noticeCtrl',
                               title: '公告管理'
@@ -83,8 +79,42 @@
                     },
                     {
                         icon: 'el-icon-setting',
-                        index: 'gather',
-                        title: '统计汇总'
+                        index: '6',
+                        title: '统计汇总',
+                        subs:[
+                        	{
+                        		index:'gather',
+                        		title:'考勤统计'
+                        	},
+                        	{
+                        		index:'ccSP',
+                        		title:'出差审批'
+                        	},
+                        	{
+                        		index:'ycSP',
+                        		title:'用车审批'
+                        	},
+                        	{
+                        		index:'jbSP',
+                        		title:'加班审批'
+                        	},
+                        	{
+                        		index:'jkSP',
+                        		title:'借款审批'
+                        	},
+                        	{
+                        		index:'cgSP',
+                        		title:'采购审批'
+                        	},
+                        	{
+                        		index:'qjSP',
+                        		title:'请假'
+                        	},
+                        	{
+                        		index:'wcSP',
+                        		title:'外出'
+                        	}
+                        ]
                     }
                 ]
             }

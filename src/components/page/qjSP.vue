@@ -3,12 +3,10 @@
 		<div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-date"></i> 统计汇总</el-breadcrumb-item>
-				<el-breadcrumb-item>考勤统计</el-breadcrumb-item>
+				<el-breadcrumb-item>出差审批</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
 		<div class="tab_select">
-				
-		
 			    <span class="demonstration">开始时间</span>
 			    <el-date-picker
 			      v-model="value1"
@@ -21,7 +19,9 @@
 			      type="date"
 			      placeholder="选择日期">
 			    </el-date-picker>
-			    <el-button @click="search">查询</el-button>
+			
+				<el-button @click="search">查询</el-button>
+			
 		</div>
 	  <el-table
 	    ref="multipleTable"
@@ -29,10 +29,6 @@
 	    tooltip-effect="dark"
 	    style="width: 100%"
 	    @selection-change="handleSelectionChange">
-	    <el-table-column
-	      <!--type="selection"-->
-	      width="55">
-	    </el-table-column>
 	    <el-table-column
 	    	align='center'
 	      prop="userId"
@@ -53,21 +49,14 @@
 	    </el-table-column>
 	    <el-table-column
 	    	align='center'
-	      prop="later"
-	      label="迟到次数"
+	      label="详情"
 	      min-width="120">
-	    </el-table-column>
-	    <el-table-column
-	    	align='center'
-	      prop="quit"
-	      label="早退次数"
-	      min-width="120">
-	    </el-table-column>
-	    <el-table-column
-	    	align='center'
-	      prop="miss"
-	      label="缺卡次数"
-	      min-width="120">
+	      <template scope="scope">
+	        <p ><span>{{ scope.row.data[0]['key'] }} : </span><span>{{ scope.row.data[0]['value'] }}</span></p>
+	        <p ><span>{{ scope.row.data[1]['key'] }} : </span><span>{{ scope.row.data[1]['value'] }}</span></p>
+	        <p ><span>{{ scope.row.data[2]['key'] }} : </span><span>{{ scope.row.data[2]['value'] }}</span></p>
+	        <p ><span>{{ scope.row.data[3]['key'] }} : </span><span>{{ scope.row.data[3]['value'] }}</span></p>
+	      </template>
 	    </el-table-column>
 	  </el-table>
 	  <div class="pagination">
@@ -98,12 +87,6 @@
         input:''
       }
     },
-	mounted(){
-//  	axios.get('/admin/statics/sign?pageNum=1&pageSize=10&beginTime=2017-07-21 00:00:00&endTime=2017-10-10 23:59:59').then( res =>{
-//  		
-//			console.log(res)
-//		});
-   },
     methods: {
     	
     	search(){
@@ -135,18 +118,24 @@
 					var d = time.getDate();
 					return y+'-'+add0(m)+'-'+add0(d)+' 23:59:59';
 				};
-	    				axios.get('/admin/statics/sign?pageNum=1&pageSize=10&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	    				axios.get('/admin/statics/6?pageNum=1&pageSize=10&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	    					console.log(res)
+	    					for(var i=0;i<res.data.data.list.length;i++){
+	    						res.data.data.list[i]['data'] = JSON.parse(res.data.data.list[i]['data']);
+	    					}
 	    					this.tableData = res.data.data.list;
 	    					this.total = res.data.data.total;
 	    					console.log(this.value2)
-							console.log(res)
 						});
 	    		
 	    	}
     	},
     	handleCurrentChange(val){
 	        this.currentPage = val;
-	        axios.get('/admin/statics/sign?pageNum='+val+'&pageSize='+this.pageSize+'&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+	        axios.get('/admin/statics/6?pageNum='+val+'&pageSize='+this.pageSize+'&beginTime='+this.value1+'&endTime='+this.value2).then( res =>{
+    					for(var i=0;i<res.data.data.list.length;i++){
+	    					res.data.data.list[i]['data'] = JSON.parse(res.data.data.list[i]['data']);
+	    				}
     					this.tableData = res.data.data.list;
     					this.total = res.data.data.total;
 						console.log(res)
@@ -164,8 +153,6 @@
 		margin-bottom: 10px;
 	}
 	.search{
-		float: right;
-		width: 30%;
 	}
 	.search .input{
 		float: left;

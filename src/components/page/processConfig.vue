@@ -214,10 +214,10 @@ export default {
 //	        	})
 //	        	return false;
 //	        };
-	        axios.get('/admin/user/?pageNum=1&pageSize='+self.pageSize+'&orgId='+this.value1+'&query='+this.queryVal).then( res => {
+	        axios.get('/admin/user/?pageNum='+val+'&pageSize='+self.pageSize+'&orgId='+this.value1+'&query='+this.queryVal).then( res => {
 	            this.dialogTableData = res.data.data.list;
 	            this.total = res.data.data.total;
-	          
+	          console.log(this.dialogTableData)
 	        })
         },
         //审批选择

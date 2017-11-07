@@ -50,7 +50,8 @@
 	      label="完成状态"
 	      min-width="120">
 	      <template scope="scope">
-	      	<span style="color:#2ba245;">已完成</span>
+	      	<span v-if="scope.row.projectState"  class="Status">已完成</span>
+		      	<span v-else class="disStauts">未完成</span>
 	      </template>
 	    </el-table-column>
 	    <el-table-column 
@@ -119,10 +120,6 @@
     	handleCurrentChange(val){
     		this.currentPage = val;
     		axios.get('/admin/project/?pageNum='+val+'&pageSize=10').then( res =>{
-	    		for(var i=0;i<res.data.data.list.length;i++){
-	    			var aa = JSON.parse(res.data.data.list[i].data);
-	    			res.data.data.list[i].data = aa;
-	    		}
 	    		this.tableData = res.data.data.list;
 	    		this.total = res.data.data.total;
 			});
@@ -145,10 +142,7 @@
 	          axios.delete('/admin/project/?projectId='+row.projectId).then(res=>{
     			console.log(res);
     			axios.get('/admin/project/?pageNum='+this.currentPage+'&pageSize=10').then( res =>{
-		    		for(var i=0;i<res.data.data.list.length;i++){
-		    			var aa = JSON.parse(res.data.data.list[i].data);
-		    			res.data.data.list[i].data = aa;
-		    		}
+		    		
 		    		this.tableData = res.data.data.list;
 		    		this.total = res.data.data.total;
 				});
