@@ -4,10 +4,10 @@
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username"></el-input>
+                    <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -40,7 +40,7 @@
         },
         mounted(){
         	this.ruleForm.username = localStorage.getItem('ms_username');
-        	this.ruleForm.password = localStorage.getItem('ms_password');
+//      	this.ruleForm.password = localStorage.getItem('ms_password');
         },
         methods: {
             submitForm(formName) {
@@ -51,7 +51,7 @@
                     		console.log(res)
                     		if(res.data.data != null){
                     			console.log('成功登录');
-	                    		localStorage.setItem('ms_password',self.ruleForm.password);
+//	                    		localStorage.setItem('ms_password',self.ruleForm.password);
 	                    		localStorage.setItem('ms_username',self.ruleForm.username);
 	                    		localStorage.setItem('ms_userId',res.data.data.userId);
 		                        self.$router.push('/readme');

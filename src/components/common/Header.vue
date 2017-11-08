@@ -23,16 +23,21 @@
             }
         },
         mounted(){
-	        	let user = localStorage.getItem('ms_username');
-            	axios.get('/admin/user/?pageNum=1&pageSize=1&query='+user).then( res =>{
-	    			console.log(res);
-	    			this.username = res.data.data.list[0].name;
-	    		})
+	        let user = localStorage.getItem('ms_username');
+	        if(user){
+	        	axios.get('/admin/user/?pageNum=1&pageSize=1&query='+user).then( res =>{
+		    		console.log(res);
+		    		this.username = res.data.data.list[0].name;
+	    	});}else{
+            	this.$router.push('/login');
+            }
         },
         methods:{
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_password')
+//                  localStorage.removeItem('ms_password')
+                    localStorage.removeItem('ms_username')
+                    localStorage.removeItem('ms_userId')
                     this.$router.push('/login');
                 }
             }
